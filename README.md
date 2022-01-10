@@ -53,6 +53,7 @@ println!("{}", style_text("Definitely an awesome crate.", Ansi::new()
 ```
 
 ## Todo
+- [ ] Add coverage, lint, and maybe packaging / publishing gh actions
 - [ ] Find whatever mistakes that exist in this crate.
 - [ ] Expand tests
 - [ ] Expand functionality?
