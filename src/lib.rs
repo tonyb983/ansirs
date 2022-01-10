@@ -1,9 +1,9 @@
 //! # Ansirs
-//! 
+//!
 //! Simple library for working with ANSI escape codes to add pretty colors to your shitty console text.
-//! 
+//!
 //! Copyright (c) 2022 Tony Barbitta
-//! 
+//!
 //! This Source Code Form is subject to the terms of the Mozilla Public
 //! License, v. 2.0. If a copy of the MPL was not distributed with this
 //! file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -36,32 +36,32 @@ bitflags! {
 pub type Rgb = (u8, u8, u8);
 
 /// Type for storing the configuration of an ANSI color code.
-/// 
+///
 /// ## Example(s)
-/// 
+///
 /// ### Lambda Usage (Recommended):
 /// ```
 /// # use ansirs::{Ansi, IntoAnsi, style_text};
-/// 
+///
 /// let body_style = Ansi::new().fg((100, 200, 100));
 /// let head_style = Ansi::new().fg((50, 250, 50)).bold().underline();
-/// 
+///
 /// let header = style_text("Some Header", head_style);
 /// let body = style_text("Here is the text for my fictional body of whatever-the-fuck. Super cool.", body_style);
-/// 
+///
 /// // println!("{}", header);
 /// // println!("{}", body);
-/// 
+///
 /// # assert_eq!(header, "\x1b[1;4;38;2;50;250;50mSome Header\x1b[0m");
 /// # assert_eq!(body, "\x1b[38;2;100;200;100mHere is the text for my fictional body of whatever-the-fuck. Super cool.\x1b[0m");
 /// ```
-/// 
+///
 /// ### Raw Usage:
 /// ```
 /// # use ansirs::{Ansi, AnsiFlags, IntoAnsi};
 /// let style1 = Ansi::new().fg((100, 200, 100)).underline();
 /// let style2 = Ansi::new().bg((0, 0, 75)).italic().strike();
-/// 
+///
 /// // println!("{}Here is text styled by #1.{}", style1, Ansi::reset());
 /// // println!("{}Here is text styled by #2.{}", style2, Ansi::reset());
 /// // println!("{}Here is more text styled by #1.{}", style1, Ansi::reset());
@@ -74,7 +74,6 @@ pub struct Ansi {
     bg: Option<Rgb>,
     flags: AnsiFlags,
 }
-
 
 // "Static" Methods
 impl Ansi {
@@ -394,10 +393,22 @@ mod tests {
         // println!("{}Here is text styled by #2.{}", style2, Ansi::reset());
         // println!("{}Here is more text styled by #1.{}", style1, Ansi::reset());
 
-        assert_eq!(style1.to_string(), format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF));
-        assert_eq!(style2.to_string(), format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF));
-        assert_eq!(style1.to_string(), format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF));
-        assert_eq!(style2.to_string(), format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF));
+        assert_eq!(
+            style1.to_string(),
+            format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF)
+        );
+        assert_eq!(
+            style2.to_string(),
+            format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF)
+        );
+        assert_eq!(
+            style1.to_string(),
+            format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF)
+        );
+        assert_eq!(
+            style2.to_string(),
+            format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF)
+        );
     }
 
     #[test]
