@@ -9,28 +9,9 @@
 //! file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #![allow(dead_code)]
-// #![feature(const_mut_refs)]
 
-use bitflags::bitflags;
-
-bitflags! {
-    /// A set of flags to determine text style with ANSI color codes.
-    #[derive(Default)]
-    pub struct AnsiFlags: u32 {
-        /// Bold text.
-        const BOLD = 1 << 1;
-        /// Underlined text.
-        const UNDERLINE = 1 << 2;
-        /// Italicized text.
-        const ITALIC = 1 << 3;
-        /// Blinking text.
-        const BLINK = 1 << 4;
-        /// Reversed / Inverted text.
-        const REVERSE = 1 << 5;
-        /// Striken text.
-        const STRIKE = 1 << 6;
-    }
-}
+mod flags;
+pub use flags::AnsiFlags;
 
 /// Alias for a tuple of 3 bytes representing R,G,B values.
 pub type Rgb = (u8, u8, u8);
@@ -187,50 +168,56 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is bold.
     #[must_use]
-    pub fn bold(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::BOLD);
-        Self { flags, ..self }
+    pub const fn bold(self) -> Self {
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::BOLD),
+            ..self
+        }
     }
 
     /// Builder function to toggle whether the color is underlined.
     #[must_use]
-    pub fn underline(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::UNDERLINE);
-        Self { flags, ..self }
+    pub const fn underline(self) -> Self {
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::UNDERLINE),
+            ..self
+        }
     }
 
     /// Builder function to toggle whether the color is italic.
     #[must_use]
     pub fn italic(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::ITALIC);
-        Self { flags, ..self }
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::ITALIC),
+            ..self
+        }
     }
 
     /// Builder function to toggle whether the color is blinking.
     #[must_use]
     pub fn blink(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::BLINK);
-        Self { flags, ..self }
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::BLINK),
+            ..self
+        }
     }
 
     /// Builder function to toggle whether the color is inversed / reversed.
     #[must_use]
     pub fn reverse(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::REVERSE);
-        Self { flags, ..self }
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::REVERSE),
+            ..self
+        }
     }
 
     /// Builder function to toggle whether the color is striked.
     #[must_use]
     pub fn strike(self) -> Self {
-        let mut flags = self.flags;
-        flags.toggle(AnsiFlags::STRIKE);
-        Self { flags, ..self }
+        Self {
+            flags: self.flags.toggle_to(AnsiFlags::STRIKE),
+            ..self
+        }
     }
 
     /// Creates a string from this `Ansi` using a `String` to store temporary data.
