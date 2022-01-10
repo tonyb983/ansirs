@@ -5,7 +5,7 @@ authors = ["Tony B."]
 version = "0.1.0"
 edition = "2021"
 repository = "https://www.github.com/tonyb983/ansirs"
-license = "	MPL-2.0"
+license = "MPL-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
