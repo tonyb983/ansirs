@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "bungcip.better-toml",
+        "panicbit.cargo",
+        "cargo-inspect-vscode.cargo-inspect",
+        "vadimcn.vscode-lldb",
+        "serayuzgur.crates",
+        "tamasfe.even-better-toml",
+        "swellaby.vscode-rust-test-adapter",
+        "dustypomerleau.rust-syntax",
+        "hdevalke.rust-test-lens",
+        "matklad.rust-analyzer"
+    ]
+}

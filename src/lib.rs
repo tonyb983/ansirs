@@ -9,6 +9,7 @@
 //! file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #![allow(dead_code)]
+// #![feature(const_mut_refs)]
 
 use bitflags::bitflags;
 
@@ -82,7 +83,7 @@ impl Ansi {
 
     /// Creates a new / empty / default Ansi instance.
     #[must_use]
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             fg: None,
             bg: None,
@@ -92,7 +93,7 @@ impl Ansi {
 
     /// Creates a new Ansi from the given foreground color.
     #[must_use]
-    pub fn from_fg(fg: Rgb) -> Self {
+    pub const fn from_fg(fg: Rgb) -> Self {
         Self {
             fg: Some(fg),
             bg: None,
@@ -102,7 +103,7 @@ impl Ansi {
 
     /// Creates a new Ansi from the given background color.
     #[must_use]
-    pub fn from_bg(bg: Rgb) -> Self {
+    pub const fn from_bg(bg: Rgb) -> Self {
         Self {
             fg: None,
             bg: Some(bg),
@@ -112,25 +113,25 @@ impl Ansi {
 
     /// Creates a new Ansi with a red foreground color.
     #[must_use]
-    pub fn red() -> Self {
+    pub const fn red() -> Self {
         Self::from_fg((255, 0, 0))
     }
 
     /// Creates a new Ansi with a green foreground color.
     #[must_use]
-    pub fn green() -> Self {
+    pub const fn green() -> Self {
         Self::from_fg((0, 255, 0))
     }
 
     /// Creates a new Ansi with a blue foreground color.
     #[must_use]
-    pub fn blue() -> Self {
+    pub const fn blue() -> Self {
         Self::from_fg((0, 0, 255))
     }
 
     /// Reset the terminal to default styling.
     #[must_use]
-    pub fn reset() -> &'static str {
+    pub const fn reset() -> &'static str {
         "\x1b[0m"
     }
 }
@@ -140,7 +141,7 @@ impl Ansi {
     /// Clear the Ansi object entirely.
     #[must_use]
     #[allow(clippy::needless_update)]
-    pub fn clear(self) -> Self {
+    pub const fn clear(self) -> Self {
         Self {
             fg: None,
             bg: None,
@@ -151,13 +152,13 @@ impl Ansi {
 
     /// Returns `true` if this `Ansi` has no styling.
     #[must_use]
-    pub fn is_default(&self) -> bool {
+    pub const fn is_default(&self) -> bool {
         self.fg.is_none() && self.bg.is_none() && self.flags.is_empty()
     }
 
     /// Builder function to set the foreground color.
     #[must_use]
-    pub fn fg(self, fg: Rgb) -> Self {
+    pub const fn fg(self, fg: Rgb) -> Self {
         Self {
             fg: Some(fg),
             ..self
@@ -166,13 +167,13 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
-    pub fn clear_fg(self) -> Self {
+    pub const fn clear_fg(self) -> Self {
         Self { fg: None, ..self }
     }
 
     /// Builder function to set the background color.
     #[must_use]
-    pub fn bg(self, bg: Rgb) -> Self {
+    pub const fn bg(self, bg: Rgb) -> Self {
         Self {
             bg: Some(bg),
             ..self
@@ -181,7 +182,7 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
-    pub fn clear_bg(self) -> Self {
+    pub const fn clear_bg(self) -> Self {
         Self { bg: None, ..self }
     }
 
