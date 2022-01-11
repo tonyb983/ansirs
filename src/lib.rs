@@ -10,11 +10,11 @@
 
 #![allow(dead_code)]
 
+mod colors;
+pub use colors::{Color, ColorParseError, Colors, ToColor};
+
 mod flags;
 pub use flags::AnsiFlags;
-
-/// Alias for a tuple of 3 bytes representing R,G,B values.
-pub type Rgb = (u8, u8, u8);
 
 /// Type for storing the configuration of an ANSI color code.
 ///
@@ -51,8 +51,8 @@ pub type Rgb = (u8, u8, u8);
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Ansi {
-    fg: Option<Rgb>,
-    bg: Option<Rgb>,
+    fg: Option<Color>,
+    bg: Option<Color>,
     flags: AnsiFlags,
 }
 
@@ -73,9 +73,9 @@ impl Ansi {
 
     /// Creates a new Ansi from the given foreground color.
     #[must_use]
-    pub const fn from_fg(fg: Rgb) -> Self {
+    pub fn from_fg(fg: impl ToColor) -> Self {
         Self {
-            fg: Some(fg),
+            fg: Some(fg.to_color()),
             bg: None,
             flags: AnsiFlags::empty(),
         }
@@ -83,29 +83,29 @@ impl Ansi {
 
     /// Creates a new Ansi from the given background color.
     #[must_use]
-    pub const fn from_bg(bg: Rgb) -> Self {
+    pub fn from_bg(bg: impl ToColor) -> Self {
         Self {
             fg: None,
-            bg: Some(bg),
+            bg: Some(bg.to_color()),
             flags: AnsiFlags::empty(),
         }
     }
 
     /// Creates a new Ansi with a red foreground color.
     #[must_use]
-    pub const fn red() -> Self {
+    pub fn red() -> Self {
         Self::from_fg((255, 0, 0))
     }
 
     /// Creates a new Ansi with a green foreground color.
     #[must_use]
-    pub const fn green() -> Self {
+    pub fn green() -> Self {
         Self::from_fg((0, 255, 0))
     }
 
     /// Creates a new Ansi with a blue foreground color.
     #[must_use]
-    pub const fn blue() -> Self {
+    pub fn blue() -> Self {
         Self::from_fg((0, 0, 255))
     }
 
@@ -138,9 +138,9 @@ impl Ansi {
 
     /// Builder function to set the foreground color.
     #[must_use]
-    pub const fn fg(self, fg: Rgb) -> Self {
+    pub fn fg(self, fg: impl ToColor) -> Self {
         Self {
-            fg: Some(fg),
+            fg: Some(fg.to_color()),
             ..self
         }
     }
@@ -153,9 +153,9 @@ impl Ansi {
 
     /// Builder function to set the background color.
     #[must_use]
-    pub const fn bg(self, bg: Rgb) -> Self {
+    pub fn bg(self, bg: impl ToColor) -> Self {
         Self {
-            bg: Some(bg),
+            bg: Some(bg.to_color()),
             ..self
         }
     }
@@ -280,7 +280,8 @@ impl Ansi {
             }
         }
 
-        if let Some((r, g, b)) = self.fg {
+        if let Some(color) = self.fg {
+            let (r,g,b) = color.rgb();
             if modified {
                 ansi.push_str(";38;2;");
             } else {
@@ -290,7 +291,8 @@ impl Ansi {
             modified = true;
         }
 
-        if let Some((r, g, b)) = self.bg {
+        if let Some(c) = self.bg {
+            let (r, g, b) = c.rgb();
             if modified {
                 ansi.push_str(";48;2;");
             } else {
@@ -451,5 +453,12 @@ mod tests {
         assert_eq!(&st, &first);
         assert_eq!(&sf, &first);
         assert_eq!(&sc, &third);
+    }
+
+    #[test]
+    fn color_inputs() {
+        let _red = Ansi::from_fg(Colors::Red);
+        let _green = Ansi::from_fg((0, 255, 0));
+        let _blue = Ansi::from_fg(Color::from_hex("#0000ff").unwrap());
     }
 }
