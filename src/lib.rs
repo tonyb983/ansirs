@@ -360,6 +360,16 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
     }
 }
 
+pub trait Styled {
+    fn style(&self, style: impl IntoAnsi) -> String;
+}
+
+impl<T> Styled for T where T: std::fmt::Display {
+    fn style(&self, style: impl IntoAnsi) -> String {
+        style_text(self.to_string(), style)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
