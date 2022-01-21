@@ -362,6 +362,14 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
     }
 }
 
+pub fn styled_print<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
+    print!("{}", style_text(text, style));
+}
+
+pub fn styled_println<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
+    println!("{}", style_text(text, style));
+}
+
 pub trait Styled {
     fn style(&self, style: impl IntoAnsi) -> String;
 }

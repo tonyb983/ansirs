@@ -216,6 +216,7 @@ impl AnsiFlags {
 
     /// Inserts the specified flags and returns the result.
     #[inline]
+    #[must_use]
     pub const fn insert_to(self, other: Self) -> Self {
         Self {
             bits: self.bits | other.bits,
@@ -230,6 +231,7 @@ impl AnsiFlags {
 
     /// Removes the specified flags and returns the result.
     #[inline]
+    #[must_use]
     pub const fn remove_to(self, other: Self) -> Self {
         Self {
             bits: self.bits & !other.bits,
@@ -244,6 +246,7 @@ impl AnsiFlags {
 
     /// Toggles the specified flags and returns the result.
     #[inline]
+    #[must_use]
     pub const fn toggle_to(self, other: Self) -> Self {
         Self {
             bits: self.bits ^ other.bits,
