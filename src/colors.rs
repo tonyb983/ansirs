@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+use crate::{Ansi, AnsiFlags, IntoAnsi};
+
 /// Error type used when parsing a color.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ColorParseError {
@@ -558,11 +560,26 @@ impl Colors {
             Colors::White => (255, 255, 255),
         }
     }
+
+    pub fn into_color(self) -> Color {
+        let (r, g, b) = self.rgb();
+        Color::from_rgb(r, g, b)
+    }
 }
 
 impl ToColor for Colors {
     fn to_color(&self) -> Color {
         self.rgb().into()
+    }
+}
+
+impl IntoAnsi for Colors {
+    fn into_ansi(self) -> Ansi {
+        Ansi {
+            fg: Some(self.into_color()),
+            bg: None,
+            flags: AnsiFlags::empty(),
+        }
     }
 }
 
@@ -572,7 +589,7 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
-impl ToColor for (u8,u8,u8) {
+impl ToColor for (u8, u8, u8) {
     fn to_color(&self) -> Color {
         Color(self.0, self.1, self.2)
     }
