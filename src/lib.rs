@@ -465,6 +465,10 @@ mod tests {
 
             style.strike()
         });
+        let scols = style_text(&first, Colors::Yellow);
+        let scols = style_text(&first, Colors::Yellow.into_ansi());
+        let yellow = Colors::Yellow.into_color();
+        let scol = style_text(&first, yellow.into_ansi());
 
         let manual_prefix = format!(
             "{}{}{}",
