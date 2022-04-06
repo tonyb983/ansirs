@@ -16,6 +16,10 @@ pub use colors::{Color, ColorParseError, Colors, ToColor};
 mod flags;
 pub use flags::AnsiFlags;
 
+pub mod iter {
+    pub use super::colors::iter::*;
+}
+
 /// Type for storing the configuration of an ANSI color code.
 ///
 /// ## Example(s)
