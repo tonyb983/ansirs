@@ -104,6 +104,14 @@ impl Color {
     pub const fn b(&self) -> u8 {
         self.2
     }
+
+    pub fn into_ansi(self) -> Ansi {
+        Ansi {
+            fg: Some(self),
+            bg: None,
+            flags: AnsiFlags::empty(),
+        }
+    }
 }
 
 impl ToColor for Color {

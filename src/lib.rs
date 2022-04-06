@@ -281,7 +281,7 @@ impl Ansi {
         }
 
         if let Some(color) = self.fg {
-            let (r,g,b) = color.rgb();
+            let (r, g, b) = color.rgb();
             if modified {
                 ansi.push_str(";38;2;");
             } else {
@@ -344,6 +344,18 @@ impl IntoAnsi for Ansi {
     }
 }
 
+impl From<Color> for Ansi {
+    fn from(c: Color) -> Self {
+        c.into_ansi()
+    }
+}
+
+impl From<Colors> for Ansi {
+    fn from(c: Colors) -> Self {
+        c.into_ansi()
+    }
+}
+
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
 /// `S` can be either an [`Ansi`](Ansi) or a closure that returns an [`Ansi`](Ansi). This might
 /// require bringing the [`IntoAnsi`](IntoAnsi) trait into scope.
@@ -374,7 +386,10 @@ pub trait Styled {
     fn style(&self, style: impl IntoAnsi) -> String;
 }
 
-impl<T> Styled for T where T: std::fmt::Display {
+impl<T> Styled for T
+where
+    T: std::fmt::Display,
+{
     fn style(&self, style: impl IntoAnsi) -> String {
         style_text(self.to_string(), style)
     }
