@@ -28,6 +28,12 @@ impl IntoAnsi for Ansi {
     }
 }
 
+impl IntoAnsi for &Ansi {
+    fn into_ansi(self) -> Ansi {
+        *self
+    }
+}
+
 impl From<Color> for Ansi {
     fn from(c: Color) -> Self {
         c.into_ansi()

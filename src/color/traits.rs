@@ -18,15 +18,45 @@ impl ToColor for Colors {
     }
 }
 
+impl ToColor for &Colors {
+    fn to_color(&self) -> Color {
+        (*self).rgb().into()
+    }
+}
+
 impl ToColor for Color {
     fn to_color(&self) -> Color {
         *self
     }
 }
 
+impl ToColor for &Color {
+    fn to_color(&self) -> Color {
+        **self
+    }
+}
+
 impl IntoAnsi for Colors {
     fn into_ansi(self) -> Ansi {
         Ansi::from_fg(self)
+    }
+}
+
+impl IntoAnsi for &Colors {
+    fn into_ansi(self) -> Ansi {
+        Ansi::from_fg(*self)
+    }
+}
+
+impl IntoAnsi for Color {
+    fn into_ansi(self) -> Ansi {
+        Ansi::from_fg(self)
+    }
+}
+
+impl IntoAnsi for &Color {
+    fn into_ansi(self) -> Ansi {
+        Ansi::from_fg(*self)
     }
 }
 
