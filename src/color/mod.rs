@@ -63,7 +63,7 @@ pub mod iter {
 pub use color::Color;
 pub use colors::Colors;
 pub use error::ColorParseError;
-pub use traits::ToColor;
+pub use traits::*;
 
 #[cfg(test)]
 mod tests {

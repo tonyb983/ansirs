@@ -92,6 +92,7 @@ mod tests {
 
             style.strike()
         });
+        // Why the fuck cant i get this to work in another project.
         let _scols = style_text(&first, Colors::Yellow);
         let _scols = style_text(&first, Colors::Yellow.into_ansi());
         let yellow = Colors::Yellow.into_color();

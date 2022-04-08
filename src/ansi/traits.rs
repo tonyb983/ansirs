@@ -40,8 +40,20 @@ impl From<Color> for Ansi {
     }
 }
 
+impl From<&Color> for Ansi {
+    fn from(c: &Color) -> Self {
+        c.into_ansi()
+    }
+}
+
 impl From<Colors> for Ansi {
     fn from(c: Colors) -> Self {
+        c.into_ansi()
+    }
+}
+
+impl From<&Colors> for Ansi {
+    fn from(c: &Colors) -> Self {
         c.into_ansi()
     }
 }

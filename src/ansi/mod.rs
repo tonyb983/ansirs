@@ -12,4 +12,4 @@ mod traits;
 
 pub use ansi::Ansi;
 pub use flags::AnsiFlags;
-pub use traits::IntoAnsi;
+pub use traits::*;
