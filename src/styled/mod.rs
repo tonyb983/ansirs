@@ -6,6 +6,8 @@
 
 use crate::{Ansi, IntoAnsi};
 
+mod str;
+
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
 /// `S` can be either an [`Ansi`](Ansi) or a closure that returns an [`Ansi`](Ansi). This might
 /// require bringing the [`IntoAnsi`](IntoAnsi) trait into scope.
