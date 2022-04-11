@@ -1,5 +1,6 @@
 /target
 Cargo.lock
-
-rust.code-workspace
+/coverage
+/rust.code-workspace
 scratch.txt
+/default.profraw
