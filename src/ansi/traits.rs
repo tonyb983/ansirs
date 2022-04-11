@@ -57,3 +57,22 @@ impl From<&Colors> for Ansi {
         c.into_ansi()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn ansi_from_color() {
+        let ansi: Ansi = Color::from_rgb(250, 250, 250).into();
+        assert_eq!(ansi, Ansi::from_fg((250, 250, 250)));
+    }
+
+    #[test]
+    fn ansi_ref_intoansi() {
+        let ansi: Ansi = Ansi::from_fg((100, 250, 100));
+        let ref_ansi: &Ansi = &ansi;
+        assert_eq!(ref_ansi.into_ansi(), ansi);
+    }
+}

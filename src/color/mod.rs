@@ -68,6 +68,7 @@ pub use traits::*;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn hex_convert_1() {
@@ -77,6 +78,15 @@ mod tests {
         assert_eq!(color1.rgb(), (255, 0, 0));
         assert_eq!(color2.rgb(), (255, 0, 0));
         assert_eq!(color3.rgb(), (255, 0, 0));
+    }
+
+    #[test]
+    fn hex_convert_unicode() {
+        let color1 = Color::from_hex("#💜💙💚💛💚💙💜");
+        assert!(color1.is_err());
+        let color2 = Color::from_hex("#1💜");
+        println!("{:?}", color2);
+        assert!(color2.is_err());
     }
 
     #[test]

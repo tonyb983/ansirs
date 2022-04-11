@@ -5,6 +5,31 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// A set of flags to determine text style with ANSI color codes.
+///
+/// This implementation was copy-pasted from the expanded `bitflags!` macro
+/// from the `bitflags` crate so as to not depend on the crate for a single usage.
+///
+/// TODO: Much of this can probably be trimmed down and removed, keeping only the
+///       functions that are actually used.
+/// Currently Unused:
+/// - all
+/// - from_bits
+/// - from_bits_truncate
+/// - from_bits_unchecked
+/// - is_all
+/// - intersects
+/// - intersection
+/// - union
+/// - difference
+/// - symmetric_difference
+/// - complement
+/// - insert
+/// - insert_to
+/// - remove
+/// - remove_to
+/// - toggle
+/// - set
+/// - bitwise operators (pretty much all)
 #[derive(Default, Copy, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
 pub struct AnsiFlags {
     bits: u8,

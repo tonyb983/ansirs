@@ -53,7 +53,8 @@ println!("{}", style_text("Definitely an awesome crate.", Ansi::new()
 ```
 
 ## Todo
-- [ ] Add coverage, lint, and maybe packaging / publishing gh actions
+- [ ] Add ~~coverage~~, lint, and maybe packaging / publishing gh actions
+    - [ ] Coverage is super easy now that rust 1.60 (stable) has stabilized llvm-based coverage instrumentation. Currently I'm using the `cargo-llvm-cov` crate, coverage can be generated in lcov format by running `cargo llvm-cov --all-features --workspace --lcov --output-path cov/lcov.info`, and can be displayed using the Coverage Gutters vscode extension (`ryanluker.vscode-coverage-gutters`), or an html report can be generated using `cargo llvm-cov --html`
 - [ ] Find whatever mistakes that exist in this crate.
 - [ ] Expand tests
 - [ ] Expand functionality?

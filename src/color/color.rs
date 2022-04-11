@@ -32,7 +32,9 @@ impl Color {
             return Err(ColorParseError::WrongLength);
         }
 
-        if !string.is_ascii() {}
+        if !string.is_ascii() {
+            return Err(ColorParseError::BadChars);
+        }
 
         let is_double = string.len() == 6;
 
@@ -63,7 +65,7 @@ impl Color {
 
     /// Create a hex string from this color.
     pub fn as_hex(&self) -> String {
-        format!("#{:02x}{:02x}{:02x}", self.0, self.1, self.2)
+        format!("#{:02X}{:02X}{:02X}", self.0, self.1, self.2)
     }
 
     /// Get the RGB tuple of this color.
@@ -88,5 +90,25 @@ impl Color {
 
     pub fn into_ansi(self) -> Ansi {
         Ansi::from_fg(self)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::{assert_eq, assert_ne};
+
+    #[test]
+    fn hex() {
+        let color = Color::from_rgb(25, 100, 250);
+        assert_eq!(color.as_hex(), "#1964FA");
+    }
+
+    #[test]
+    fn components() {
+        let color = Color::from_rgb(25, 100, 250);
+        assert_eq!(color.r(), 25);
+        assert_eq!(color.g(), 100);
+        assert_eq!(color.b(), 250);
     }
 }

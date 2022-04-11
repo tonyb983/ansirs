@@ -25,6 +25,7 @@ pub use styled::*;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     const DISPLAY_PRE: &str = "\u{1b}[";
     const DISPLAY_SUF: &str = "m";
