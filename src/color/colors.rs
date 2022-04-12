@@ -1037,6 +1037,18 @@ pub mod iter {
             current
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn default() {
+            let mut iter: ColorsIter = Default::default();
+            assert_eq!(iter.next(), Some(Colors::AliceBlue));
+        }
+    }
 }
 
 #[cfg(test)]
