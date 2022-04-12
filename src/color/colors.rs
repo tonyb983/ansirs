@@ -990,6 +990,55 @@ impl FromStr for Colors {
     }
 }
 
+pub mod iter {
+    use super::Colors;
+
+    pub struct ColorsIter {
+        current: Option<Colors>,
+    }
+
+    impl Default for ColorsIter {
+        fn default() -> Self {
+            Self {
+                current: Some(Self::FIRST),
+            }
+        }
+    }
+
+    impl ColorsIter {
+        const FIRST: Colors = Colors::AliceBlue;
+        const LAST: Colors = Colors::YellowGreen;
+
+        pub fn new() -> Self {
+            Default::default()
+        }
+
+        pub fn starting_with(color: Colors) -> Self {
+            Self {
+                current: Some(color),
+            }
+        }
+    }
+
+    impl Iterator for ColorsIter {
+        type Item = Colors;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            let current = self.current.take();
+            self.current = current.and_then(|c| {
+                let next = c.next();
+                if next == Self::FIRST {
+                    None
+                } else {
+                    Some(next)
+                }
+            });
+
+            current
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
