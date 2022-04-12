@@ -21,16 +21,20 @@ macro_rules! make_colors {
 
                     /// Get the name of this color.
                     pub const fn name(&self) -> &'static str {
+
                         match self {
                             $(Colors::$color => stringify!($color),)*
                         }
+
                     }
 
                     /// Get the RGB values of this color.
                     pub const fn rgb(&self) -> (u8, u8, u8) {
+
                         match self {
                             $(Colors::$color => ($r,$g,$b),)*
                         }
+
                     }
 
                 }
