@@ -369,6 +369,7 @@ impl Color {
     }
 }
 
+/// TODO: Should this be changed?
 impl std::fmt::Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let (r, g, b) = self.rgb();
