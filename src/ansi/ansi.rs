@@ -104,6 +104,72 @@ impl Ansi {
     pub const fn reset() -> &'static str {
         "\x1b[0m"
     }
+
+    pub fn parse_ansi_text(input: &str) -> Option<Ansi> {
+        if !input.starts_with(Self::PREFIX) {
+            eprintln!("Invalid prefix for ansi color codes.");
+            return None;
+        }
+
+        let end = match input.find('m') {
+            Some(i) => i,
+            None => {
+                eprintln!("Unable to find 'm' end marker");
+                return None;
+            }
+        };
+        let mut ansi_nums = input["\u{1b}[".len()..end]
+            .split(';')
+            .filter_map(|c| c.parse::<u8>().ok())
+            .collect::<Vec<_>>();
+        // println!("ansi_nums = {:#?}", ansi_nums);
+
+        let mut ansi = Self::new();
+
+        // This is ugly as fuck!
+        if let Some(fg_rgb) = ansi_nums.iter().position(|n| *n == 38) {
+            let r = ansi_nums.get(fg_rgb + 2);
+            let g = ansi_nums.get(fg_rgb + 3);
+            let b = ansi_nums.get(fg_rgb + 4);
+            if let (Some(r), Some(g), Some(b)) = (r, g, b) {
+                ansi = ansi.fg((*r, *g, *b));
+                for _ in fg_rgb..fg_rgb + 5 {
+                    ansi_nums.remove(fg_rgb);
+                }
+            } else {
+                eprintln!("Unable to parse foreground color.");
+                return None;
+            }
+        }
+        if let Some(bg_rgb) = ansi_nums.iter().position(|n| *n == 48) {
+            let r = ansi_nums.get(bg_rgb + 2);
+            let g = ansi_nums.get(bg_rgb + 3);
+            let b = ansi_nums.get(bg_rgb + 4);
+            if let (Some(r), Some(g), Some(b)) = (r, g, b) {
+                ansi = ansi.bg((*r, *g, *b));
+                for _ in bg_rgb..bg_rgb + 5 {
+                    ansi_nums.remove(bg_rgb);
+                }
+            } else {
+                eprintln!("Unable to parse background color.");
+                return None;
+            }
+        }
+
+        for num in ansi_nums {
+            match num {
+                1 => ansi = ansi.bold(),
+                3 => ansi = ansi.italic(),
+                4 => ansi = ansi.underline(),
+                5 => ansi = ansi.blink(),
+                7 => ansi = ansi.reverse(),
+                9 => ansi = ansi.strike(),
+                _ => eprintln!("Unknown ANSI flag: {}", num),
+            }
+        }
+
+        Some(ansi)
+    }
 }
 
 // Member functions
@@ -428,5 +494,60 @@ mod tests {
         let ansi = Ansi::new();
         let painted = ansi.paint_text("Hello world!");
         assert_eq!(painted, "Hello world!");
+    }
+
+    #[test]
+    fn ansi_parse() {
+        let ansi = Ansi::from_fg((255, 255, 255)).bold().underline();
+        let painted = ansi.paint_text("Hello world!");
+
+        let parsed = Ansi::parse_ansi_text(painted.as_str());
+        let parsed2 = Ansi::parse_ansi_text("\u{1b}[1;4;38;2;255;255;255m");
+
+        assert!(parsed.is_some());
+        assert_eq!(parsed.unwrap(), ansi);
+        assert_eq!(parsed, parsed2);
+
+        // No color codes
+        assert!(Ansi::parse_ansi_text("Hello world").is_none());
+        // Missing end marker
+        assert!(Ansi::parse_ansi_text("\u{1b}[1;4;38;2;255;255;255").is_none());
+        // Bad foreground
+        assert!(Ansi::parse_ansi_text("\u{1b}[1;4;38;2;255;255m").is_none());
+        // Bad background
+        assert!(Ansi::parse_ansi_text("\u{1b}[1;4;48;2;255;255m").is_none());
+
+        let the_works = Ansi::new()
+            .fg((50, 250, 150))
+            .bg((25, 25, 25))
+            .bold()
+            .blink()
+            .italic()
+            .reverse()
+            .strike()
+            .underline();
+
+        assert_eq!(
+            the_works.to_string(),
+            "\u{1b}[1;3;4;5;7;9;38;2;50;250;150;48;2;25;25;25m"
+        );
+        assert_eq!(
+            Ansi::parse_ansi_text("\u{1b}[1;3;4;5;7;9;38;2;50;250;150;48;2;25;25;25m").unwrap(),
+            the_works
+        );
+
+        let all_but_color = Ansi::new()
+            .bold()
+            .blink()
+            .italic()
+            .reverse()
+            .strike()
+            .underline();
+
+        assert_eq!(all_but_color.to_string(), "\u{1b}[1;3;4;5;7;9m");
+        assert_eq!(
+            Ansi::parse_ansi_text("\u{1b}[1;3;4;5;7;9m").unwrap(),
+            all_but_color
+        );
     }
 }
