@@ -563,3 +563,140 @@ impl BoolFlags for AnsiFlags {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn all_the_things() {
+        assert_eq!(
+            AnsiFlags::all(),
+            AnsiFlags::BOLD
+                | AnsiFlags::UNDERLINE
+                | AnsiFlags::ITALIC
+                | AnsiFlags::BLINK
+                | AnsiFlags::REVERSE
+                | AnsiFlags::STRIKE
+        );
+        assert!(AnsiFlags::is_all(&AnsiFlags::all()));
+        assert_eq!(
+            format!("{:?}", AnsiFlags::all()),
+            "BOLD | UNDERLINE | ITALIC | BLINK | REVERSE | STRIKE"
+        );
+        assert!(!AnsiFlags::is_empty(&AnsiFlags::all()));
+        assert!(AnsiFlags::all().contains(AnsiFlags::UNDERLINE));
+        assert_eq!(AnsiFlags::from_bits(0x0), Some(AnsiFlags::empty()));
+        assert_eq!(AnsiFlags::from_bits(0x1), Some(AnsiFlags::BOLD));
+        assert_eq!(AnsiFlags::from_bits(0x64), None);
+        assert_eq!(AnsiFlags::from_bits_truncate(200), AnsiFlags::BLINK);
+        unsafe {
+            assert_eq!(AnsiFlags::from_bits_unchecked(1), AnsiFlags::BOLD);
+        }
+        assert!((AnsiFlags::BOLD | AnsiFlags::ITALIC).intersects(AnsiFlags::BOLD));
+        assert_eq!(
+            (AnsiFlags::BOLD | AnsiFlags::ITALIC)
+                .intersection(AnsiFlags::BOLD | AnsiFlags::UNDERLINE | AnsiFlags::STRIKE),
+            AnsiFlags::BOLD
+        );
+        assert_eq!(
+            (AnsiFlags::BOLD | AnsiFlags::ITALIC)
+                .union(AnsiFlags::STRIKE | AnsiFlags::UNDERLINE | AnsiFlags::ITALIC),
+            AnsiFlags::BOLD | AnsiFlags::ITALIC | AnsiFlags::STRIKE | AnsiFlags::UNDERLINE
+        );
+        assert_eq!(
+            (AnsiFlags::BOLD | AnsiFlags::ITALIC)
+                .difference(AnsiFlags::STRIKE | AnsiFlags::UNDERLINE | AnsiFlags::ITALIC),
+            AnsiFlags::BOLD
+        );
+        assert_eq!(
+            (AnsiFlags::BOLD | AnsiFlags::ITALIC)
+                .symmetric_difference(AnsiFlags::STRIKE | AnsiFlags::UNDERLINE | AnsiFlags::ITALIC),
+            AnsiFlags::BOLD | AnsiFlags::STRIKE | AnsiFlags::UNDERLINE
+        );
+        assert_eq!(
+            (AnsiFlags::STRIKE | AnsiFlags::UNDERLINE | AnsiFlags::ITALIC).complement(),
+            AnsiFlags::all() - AnsiFlags::STRIKE - AnsiFlags::UNDERLINE - AnsiFlags::ITALIC
+        );
+        let mut strike = AnsiFlags::STRIKE;
+        strike.insert(AnsiFlags::UNDERLINE);
+        assert_eq!(strike, AnsiFlags::STRIKE | AnsiFlags::UNDERLINE);
+        assert_eq!(strike, AnsiFlags::STRIKE.insert_to(AnsiFlags::UNDERLINE));
+        strike.remove(AnsiFlags::UNDERLINE);
+        assert_eq!(strike, AnsiFlags::STRIKE);
+        assert_eq!(
+            strike,
+            (AnsiFlags::STRIKE | AnsiFlags::UNDERLINE).remove_to(AnsiFlags::UNDERLINE)
+        );
+        let mut bold = AnsiFlags::BOLD;
+        bold.toggle(AnsiFlags::all());
+        assert_eq!(bold, AnsiFlags::all() - AnsiFlags::BOLD);
+        bold.set(AnsiFlags::BOLD, true);
+        assert_eq!(bold, AnsiFlags::all());
+        bold.set(AnsiFlags::all(), false);
+        assert_eq!(bold, AnsiFlags::empty());
+        assert!(bold.is_empty());
+    }
+
+    #[test]
+    fn ops_binary() {
+        use std::ops::*;
+        let mut bold = AnsiFlags::BOLD;
+        let out = bold.bitand(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(out, AnsiFlags::BOLD);
+        bold.bitand_assign(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(out, bold);
+        let italic = AnsiFlags::ITALIC;
+        let out = italic.bitand(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(out, AnsiFlags::empty());
+
+        let mut italic = AnsiFlags::ITALIC;
+        let out = italic.bitor(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(
+            out,
+            AnsiFlags::BOLD | AnsiFlags::UNDERLINE | AnsiFlags::ITALIC
+        );
+        italic.bitor_assign(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(out, italic);
+
+        let mut blink = AnsiFlags::BLINK;
+        let out = blink.bitxor(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(
+            out,
+            AnsiFlags::BOLD | AnsiFlags::UNDERLINE | AnsiFlags::BLINK
+        );
+        blink.bitxor_assign(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);
+        assert_eq!(out, blink);
+
+        let blink = AnsiFlags::BLINK;
+        let out = blink.not();
+        assert_eq!(out, AnsiFlags::all() - AnsiFlags::BLINK);
+    }
+
+    #[test]
+    fn other_traits() {
+        let mut flags = AnsiFlags::REVERSE;
+        flags.extend([AnsiFlags::BOLD]);
+        assert_eq!(flags, AnsiFlags::REVERSE | AnsiFlags::BOLD);
+        // flags.extend_one(AnsiFlags::ITALIC);
+        // assert_eq!(
+        //     flags,
+        //     AnsiFlags::REVERSE | AnsiFlags::BOLD | AnsiFlags::ITALIC
+        // );
+        assert!(!AnsiFlags::ITALIC.BOLD());
+        assert!(!AnsiFlags::ITALIC.BLINK());
+        assert!(!AnsiFlags::ITALIC.STRIKE());
+        assert!(!AnsiFlags::ITALIC.UNDERLINE());
+        assert!(!AnsiFlags::ITALIC.REVERSE());
+        assert!(AnsiFlags::ITALIC.ITALIC());
+    }
+
+    #[test]
+    fn format() {
+        assert_eq!(format!("{:02x}", AnsiFlags::all()), "3f");
+        assert_eq!(format!("{:02X}", AnsiFlags::all()), "3F");
+        assert_eq!(format!("{:02o}", AnsiFlags::all()), "77");
+        assert_eq!(format!("{:02b}", AnsiFlags::all()), "111111");
+    }
+}
