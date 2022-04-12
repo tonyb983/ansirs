@@ -70,6 +70,27 @@ mod tests {
     }
 
     #[test]
+    fn ansi_from_ref_color() {
+        let ansi: Ansi = Color::from_rgb(250, 250, 250).into();
+        let c = Color::from_rgb(250, 250, 250);
+        assert_eq!(ansi, Ansi::from(&c));
+    }
+
+    #[test]
+    fn ansi_from_colors() {
+        let colors = Colors::Maroon;
+        let ansi: Ansi = Color::from_rgb(128, 0, 0).into();
+        assert_eq!(ansi, Ansi::from(colors));
+    }
+
+    #[test]
+    fn ansi_from_ref_colors() {
+        let colors = Colors::Maroon;
+        let ansi: Ansi = Color::from_rgb(128, 0, 0).into();
+        assert_eq!(ansi, Ansi::from(&colors));
+    }
+
+    #[test]
     fn ansi_ref_intoansi() {
         let ansi: Ansi = Ansi::from_fg((100, 250, 100));
         let ref_ansi: &Ansi = &ansi;
