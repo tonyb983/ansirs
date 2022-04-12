@@ -929,7 +929,7 @@ impl Colors {
     /// Gets the closest named color to the rgb values given using simple absolute difference calculations
     ///
     /// TODO: This can probably be better right?
-    pub fn get_closest_color(input: (u8, u8, u8)) -> Self {
+    pub fn get_closest_color(input: (u8, u8, u8)) -> Option<(Self, usize)> {
         fn abs_diff(a: usize, b: usize) -> usize {
             if a > b {
                 a - b
@@ -941,7 +941,7 @@ impl Colors {
         let r = r as usize;
         let g = g as usize;
         let b = b as usize;
-        let (closest, amount) = Self::all()
+        Self::all()
             .map(|c| {
                 let (cr, cg, cb) = c.rgb();
                 let cr = cr as usize;
@@ -950,13 +950,6 @@ impl Colors {
                 (c, abs_diff(r, cr) + abs_diff(g, cg) + abs_diff(b, cb))
             })
             .min_by_key(|(_, d)| *d)
-            .unwrap();
-
-        println!(
-            "Closest color to {:?} is {:?} with distance {:?}",
-            input, closest, amount
-        );
-        closest
     }
 }
 
@@ -1512,29 +1505,30 @@ mod tests {
 
     #[test]
     fn closest() {
-        assert_eq!(
+        assert!(matches!(
             Colors::get_closest_color((240, 248, 255)),
-            Colors::AliceBlue
-        );
-        assert_eq!(
-            Colors::get_closest_color((240, 248, 254)),
-            Colors::AliceBlue
-        );
-        assert_eq!(
-            Colors::get_closest_color((240, 247, 254)),
-            Colors::AliceBlue
-        );
-        assert_eq!(
+            Some((Colors::AliceBlue, _))
+        ));
+        assert!(matches!(
             Colors::get_closest_color((239, 247, 254)),
-            Colors::AliceBlue
-        );
-        assert_eq!(Colors::get_closest_color((0, 0, 0)), Colors::Black);
-        assert_eq!(Colors::get_closest_color((255, 255, 255)), Colors::White);
-        assert_eq!(Colors::get_closest_color((200, 200, 200)), Colors::Silver);
-        assert_eq!(
+            Some((Colors::AliceBlue, _))
+        ));
+        assert!(matches!(
+            Colors::get_closest_color((0, 0, 0)),
+            Some((Colors::Black, _))
+        ));
+        assert!(matches!(
+            Colors::get_closest_color((255, 255, 255)),
+            Some((Colors::White, _))
+        ));
+        assert!(matches!(
+            Colors::get_closest_color((200, 200, 200)),
+            Some((Colors::Silver, _))
+        ));
+        assert!(matches!(
             Colors::get_closest_color((25, 125, 250)),
-            Colors::DodgerBlue
-        );
+            Some((Colors::DodgerBlue, _))
+        ));
     }
 
     #[test]
