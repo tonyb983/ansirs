@@ -105,6 +105,11 @@ mod tests {
     }
 
     #[test]
+    fn color_from_non_ascii() {
+        assert_eq!(Err(ColorParseError::BadChars), Color::from_hex("üßü"));            
+    }
+
+    #[test]
     fn components() {
         let color = Color::from_rgb(25, 100, 250);
         assert_eq!(color.r(), 25);
