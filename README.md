@@ -1,4 +1,8 @@
 # Ansirs (Like Answers I Guess?)
+
+[![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/tonyb983/ansirs)](https://rust-reportcard.xuri.me/report/github.com/tonyb983/ansirs)
+[![Coverage Status](https://coveralls.io/repos/github/tonyb983/ansirs/badge.svg?branch=main)](https://coveralls.io/github/tonyb983/ansirs?branch=main)
+
 Simple and probably flawed little library to make simple usage of ansi color codes super easy when working with rust.
 
 I tend to make a lot of shitty little terminal applications and I got sick of googling for ANSI color codes, or installing some huge or unweildy package to handle it, so I decided to make my own stupid and/or unweildy crate!

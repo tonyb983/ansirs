@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+use std::str::FromStr;
+
 use crate::Color;
 
 /// Enum containing known named colors.
@@ -303,6 +305,310 @@ impl Colors {
             Self::WhiteSmoke => "WhiteSmoke",
             Self::Yellow => "Yellow",
             Self::YellowGreen => "YellowGreen",
+        }
+    }
+
+    /// Try to get a named color from the given string.
+    /// #### Non-const function.
+    pub fn from_name(input: &str) -> Option<Self> {
+        match input {
+            "AliceBlue" | "Alice Blue" => Some(Self::AliceBlue),
+            "AntiqueWhite" | "Antique White" => Some(Self::AntiqueWhite),
+            "Aqua" => Some(Self::Aqua),
+            "AquaMarine" | "Aqua Marine" => Some(Self::AquaMarine),
+            "Azure" => Some(Self::Azure),
+            "Beige" => Some(Self::Beige),
+            "Bisque" => Some(Self::Bisque),
+            "Black" => Some(Self::Black),
+            "BlanchedAlmond" | "Blanched Almond" => Some(Self::BlanchedAlmond),
+            "Blue" => Some(Self::Blue),
+            "BlueViolet" | "Blue Violet" => Some(Self::BlueViolet),
+            "Brown" => Some(Self::Brown),
+            "BurlyWood" | "Burly Wood" => Some(Self::BurlyWood),
+            "CadetBlue" | "Cadet Blue" => Some(Self::CadetBlue),
+            "Chartreuse" => Some(Self::Chartreuse),
+            "Chocolate" => Some(Self::Chocolate),
+            "Coral" => Some(Self::Coral),
+            "CornFlowerBlue" | "Corn Flower Blue" => Some(Self::CornFlowerBlue),
+            "CornSilk" | "Corn Silk" => Some(Self::CornSilk),
+            "Crimson" => Some(Self::Crimson),
+            "Cyan" => Some(Self::Cyan),
+            "DarkBlue" | "Dark Blue" => Some(Self::DarkBlue),
+            "DarkCyan" | "Dark Cyan" => Some(Self::DarkCyan),
+            "DarkGoldenRod" | "Dark Golden Rod" => Some(Self::DarkGoldenRod),
+            "DarkGray" | "Dark Gray" => Some(Self::DarkGray),
+            "DarkGreen" | "Dark Green" => Some(Self::DarkGreen),
+            "DarkGrey" | "Dark Grey" => Some(Self::DarkGrey),
+            "DarkKhaki" | "Dark Khaki" => Some(Self::DarkKhaki),
+            "DarkMagenta" | "Dark Magenta" => Some(Self::DarkMagenta),
+            "DarkOliveGreen" | "Dark Olive Green" => Some(Self::DarkOliveGreen),
+            "DarkOrange" | "Dark Orange" => Some(Self::DarkOrange),
+            "DarkOrchid" | "Dark Orchid" => Some(Self::DarkOrchid),
+            "DarkRed" | "Dark Red" => Some(Self::DarkRed),
+            "DarkSalmon" | "Dark Salmon" => Some(Self::DarkSalmon),
+            "DarkSeaGreen" | "Dark Sea Green" => Some(Self::DarkSeaGreen),
+            "DarkSlateBlue" | "Dark Slate Blue" => Some(Self::DarkSlateBlue),
+            "DarkSlateGray" | "Dark Slate Gray" => Some(Self::DarkSlateGray),
+            "DarkTurquoise" | "Dark Turquoise" => Some(Self::DarkTurquoise),
+            "DarkViolet" | "Dark Violet" => Some(Self::DarkViolet),
+            "DeepPink" | "Deep Pink" => Some(Self::DeepPink),
+            "DeepSkyBlue" | "Deep Sky Blue" => Some(Self::DeepSkyBlue),
+            "DimGray" | "Dim Gray" => Some(Self::DimGray),
+            "DimGrey" | "Dim Grey" => Some(Self::DimGrey),
+            "DodgerBlue" | "Dodger Blue" => Some(Self::DodgerBlue),
+            "Firebrick" => Some(Self::Firebrick),
+            "FloralWhite" | "Floral White" => Some(Self::FloralWhite),
+            "ForestGreen" | "Forest Green" => Some(Self::ForestGreen),
+            "Fuchsia" => Some(Self::Fuchsia),
+            "Gainsboro" => Some(Self::Gainsboro),
+            "GhostWhite" | "Ghost White" => Some(Self::GhostWhite),
+            "Gold" => Some(Self::Gold),
+            "GoldenRod" | "Golden Rod" => Some(Self::GoldenRod),
+            "Gray" => Some(Self::Gray),
+            "Green" => Some(Self::Green),
+            "GreenYellow" | "Green Yellow" => Some(Self::GreenYellow),
+            "Grey" => Some(Self::Grey),
+            "Honeydew" => Some(Self::Honeydew),
+            "HotPink" | "Hot Pink" => Some(Self::HotPink),
+            "IndianRed" | "Indian Red" => Some(Self::IndianRed),
+            "Indigo" => Some(Self::Indigo),
+            "Ivory" => Some(Self::Ivory),
+            "Khaki" => Some(Self::Khaki),
+            "Lavender" => Some(Self::Lavender),
+            "LavenderBlush" | "Lavender Blush" => Some(Self::LavenderBlush),
+            "LawnGreen" | "Lawn Green" => Some(Self::LawnGreen),
+            "LemonChiffon" | "Lemon Chiffon" => Some(Self::LemonChiffon),
+            "LightBlue" | "Light Blue" => Some(Self::LightBlue),
+            "LightCoral" | "Light Coral" => Some(Self::LightCoral),
+            "LightCyan" | "Light Cyan" => Some(Self::LightCyan),
+            "LightGoldenRodYellow" | "Light Golden Rod Yellow" => Some(Self::LightGoldenRodYellow),
+            "LightGray" | "Light Gray" => Some(Self::LightGray),
+            "LightGreen" | "Light Green" => Some(Self::LightGreen),
+            "LightGrey" | "Light Grey" => Some(Self::LightGrey),
+            "LightPink" | "Light Pink" => Some(Self::LightPink),
+            "LightSalmon" | "Light Salmon" => Some(Self::LightSalmon),
+            "LightSeaGreen" | "Light Sea Green" => Some(Self::LightSeaGreen),
+            "LightSkyBlue" | "Light Sky Blue" => Some(Self::LightSkyBlue),
+            "LightSlateGray" | "Light Slate Gray" => Some(Self::LightSlateGray),
+            "LightSteelBlue" | "Light Steel Blue" => Some(Self::LightSteelBlue),
+            "LightYellow" | "Light Yellow" => Some(Self::LightYellow),
+            "Lime" => Some(Self::Lime),
+            "LimeGreen" | "Lime Green" => Some(Self::LimeGreen),
+            "Linen" => Some(Self::Linen),
+            "Magenta" => Some(Self::Magenta),
+            "Maroon" => Some(Self::Maroon),
+            "MediumAquaMarine" | "Medium Aqua Marine" => Some(Self::MediumAquaMarine),
+            "MediumBlue" | "Medium Blue" => Some(Self::MediumBlue),
+            "MediumOrchid" | "Medium Orchid" => Some(Self::MediumOrchid),
+            "MediumPurple" | "Medium Purple" => Some(Self::MediumPurple),
+            "MediumSeaGreen" | "Medium Sea Green" => Some(Self::MediumSeaGreen),
+            "MediumSlateBlue" | "Medium Slate Blue" => Some(Self::MediumSlateBlue),
+            "MediumSpringGreen" | "Medium Spring Green" => Some(Self::MediumSpringGreen),
+            "MediumTurquoise" | "Medium Turquoise" => Some(Self::MediumTurquoise),
+            "MediumVioletRed" | "Medium Violet Red" => Some(Self::MediumVioletRed),
+            "MidnightBlue" | "Midnight Blue" => Some(Self::MidnightBlue),
+            "MintCream" | "Mint Cream" => Some(Self::MintCream),
+            "MistyRose" | "Misty Rose" => Some(Self::MistyRose),
+            "Moccasin" => Some(Self::Moccasin),
+            "NavajoWhite" | "Navajo White" => Some(Self::NavajoWhite),
+            "Navy" => Some(Self::Navy),
+            "OldLace" | "Old Lace" => Some(Self::OldLace),
+            "Olive" => Some(Self::Olive),
+            "OliveDrab" | "Olive Drab" => Some(Self::OliveDrab),
+            "Orange" => Some(Self::Orange),
+            "OrangeRed" | "Orange Red" => Some(Self::OrangeRed),
+            "Orchid" => Some(Self::Orchid),
+            "PaleGoldenRod" | "Pale Golden Rod" => Some(Self::PaleGoldenRod),
+            "PaleGreen" | "Pale Green" => Some(Self::PaleGreen),
+            "PaleTurquoise" | "Pale Turquoise" => Some(Self::PaleTurquoise),
+            "PaleVioletRed" | "Pale Violet Red" => Some(Self::PaleVioletRed),
+            "PapayaWhip" | "Papaya Whip" => Some(Self::PapayaWhip),
+            "PeachPuff" | "Peach Puff" => Some(Self::PeachPuff),
+            "Peru" => Some(Self::Peru),
+            "Pink" => Some(Self::Pink),
+            "Plum" => Some(Self::Plum),
+            "PowderBlue" | "Powder Blue" => Some(Self::PowderBlue),
+            "Purple" => Some(Self::Purple),
+            "Red" => Some(Self::Red),
+            "RosyBrown" | "Rosy Brown" => Some(Self::RosyBrown),
+            "RoyalBlue" | "Royal Blue" => Some(Self::RoyalBlue),
+            "SaddleBrown" | "Saddle Brown" => Some(Self::SaddleBrown),
+            "Salmon" => Some(Self::Salmon),
+            "SandyBrown" | "Sandy Brown" => Some(Self::SandyBrown),
+            "SeaGreen" | "Sea Green" => Some(Self::SeaGreen),
+            "SeaShell" | "Sea Shell" => Some(Self::SeaShell),
+            "Sienna" => Some(Self::Sienna),
+            "Silver" => Some(Self::Silver),
+            "SkyBlue" | "Sky Blue" => Some(Self::SkyBlue),
+            "SlateBlue" | "Slate Blue" => Some(Self::SlateBlue),
+            "SlateGray" | "Slate Gray" => Some(Self::SlateGray),
+            "Snow" => Some(Self::Snow),
+            "SpringGreen" | "Spring Green" => Some(Self::SpringGreen),
+            "SteelBlue" | "Steel Blue" => Some(Self::SteelBlue),
+            "Tan" => Some(Self::Tan),
+            "Teal" => Some(Self::Teal),
+            "Thistle" => Some(Self::Thistle),
+            "Tomato" => Some(Self::Tomato),
+            "Turquoise" => Some(Self::Turquoise),
+            "Violet" => Some(Self::Violet),
+            "Wheat" => Some(Self::Wheat),
+            "White" => Some(Self::White),
+            "WhiteSmoke" | "White Smoke" => Some(Self::WhiteSmoke),
+            "Yellow" => Some(Self::Yellow),
+            "YellowGreen" | "Yellow Green" => Some(Self::YellowGreen),
+            _ => None,
+        }
+    }
+
+    /// Try to get a named color from the given name (compared as lowercase strings).
+    /// #### Non-const function.
+    pub fn from_name_ignore_case(input: &str) -> Option<Self> {
+        match input.to_lowercase().as_str() {
+            "aliceblue" | "alice blue" => Some(Self::AliceBlue),
+            "antiquewhite" | "antique white" => Some(Self::AntiqueWhite),
+            "aqua" => Some(Self::Aqua),
+            "aquamarine" | "aqua marine" => Some(Self::AquaMarine),
+            "azure" => Some(Self::Azure),
+            "beige" => Some(Self::Beige),
+            "bisque" => Some(Self::Bisque),
+            "black" => Some(Self::Black),
+            "blanchedalmond" | "blanched almond" => Some(Self::BlanchedAlmond),
+            "blue" => Some(Self::Blue),
+            "blueviolet" | "blue violet" => Some(Self::BlueViolet),
+            "brown" => Some(Self::Brown),
+            "burlywood" | "burly wood" => Some(Self::BurlyWood),
+            "cadetblue" | "cadet blue" => Some(Self::CadetBlue),
+            "chartreuse" => Some(Self::Chartreuse),
+            "chocolate" => Some(Self::Chocolate),
+            "coral" => Some(Self::Coral),
+            "cornflowerblue" | "corn flower blue" => Some(Self::CornFlowerBlue),
+            "cornsilk" | "corn silk" => Some(Self::CornSilk),
+            "crimson" => Some(Self::Crimson),
+            "cyan" => Some(Self::Cyan),
+            "darkblue" | "dark blue" => Some(Self::DarkBlue),
+            "darkcyan" | "dark cyan" => Some(Self::DarkCyan),
+            "darkgoldenrod" | "dark golden rod" => Some(Self::DarkGoldenRod),
+            "darkgray" | "dark gray" => Some(Self::DarkGray),
+            "darkgreen" | "dark green" => Some(Self::DarkGreen),
+            "darkgrey" | "dark grey" => Some(Self::DarkGrey),
+            "darkkhaki" | "dark khaki" => Some(Self::DarkKhaki),
+            "darkmagenta" | "dark magenta" => Some(Self::DarkMagenta),
+            "darkolivegreen" | "dark olive green" => Some(Self::DarkOliveGreen),
+            "darkorange" | "dark orange" => Some(Self::DarkOrange),
+            "darkorchid" | "dark orchid" => Some(Self::DarkOrchid),
+            "darkred" | "dark red" => Some(Self::DarkRed),
+            "darksalmon" | "dark salmon" => Some(Self::DarkSalmon),
+            "darkseagreen" | "dark sea green" => Some(Self::DarkSeaGreen),
+            "darkslateblue" | "dark slate blue" => Some(Self::DarkSlateBlue),
+            "darkslategray" | "dark slate gray" => Some(Self::DarkSlateGray),
+            "darkturquoise" | "dark turquoise" => Some(Self::DarkTurquoise),
+            "darkviolet" | "dark violet" => Some(Self::DarkViolet),
+            "deeppink" | "deep pink" => Some(Self::DeepPink),
+            "deepskyblue" | "deep sky blue" => Some(Self::DeepSkyBlue),
+            "dimgray" | "dim gray" => Some(Self::DimGray),
+            "dimgrey" | "dim grey" => Some(Self::DimGrey),
+            "dodgerblue" | "dodger blue" => Some(Self::DodgerBlue),
+            "firebrick" => Some(Self::Firebrick),
+            "floralwhite" | "floral white" => Some(Self::FloralWhite),
+            "forestgreen" | "forest green" => Some(Self::ForestGreen),
+            "fuchsia" => Some(Self::Fuchsia),
+            "gainsboro" => Some(Self::Gainsboro),
+            "ghostwhite" | "ghost white" => Some(Self::GhostWhite),
+            "gold" => Some(Self::Gold),
+            "goldenrod" | "golden rod" => Some(Self::GoldenRod),
+            "gray" => Some(Self::Gray),
+            "green" => Some(Self::Green),
+            "greenyellow" | "green yellow" => Some(Self::GreenYellow),
+            "grey" => Some(Self::Grey),
+            "honeydew" => Some(Self::Honeydew),
+            "hotpink" | "hot pink" => Some(Self::HotPink),
+            "indianred" | "indian red" => Some(Self::IndianRed),
+            "indigo" => Some(Self::Indigo),
+            "ivory" => Some(Self::Ivory),
+            "khaki" => Some(Self::Khaki),
+            "lavender" => Some(Self::Lavender),
+            "lavenderblush" | "lavender blush" => Some(Self::LavenderBlush),
+            "lawngreen" | "lawn green" => Some(Self::LawnGreen),
+            "lemonchiffon" | "lemon chiffon" => Some(Self::LemonChiffon),
+            "lightblue" | "light blue" => Some(Self::LightBlue),
+            "lightcoral" | "light coral" => Some(Self::LightCoral),
+            "lightcyan" | "light cyan" => Some(Self::LightCyan),
+            "lightgoldenrodyellow" | "light golden rod yellow" => Some(Self::LightGoldenRodYellow),
+            "lightgray" | "light gray" => Some(Self::LightGray),
+            "lightgreen" | "light green" => Some(Self::LightGreen),
+            "lightgrey" | "light grey" => Some(Self::LightGrey),
+            "lightpink" | "light pink" => Some(Self::LightPink),
+            "lightsalmon" | "light salmon" => Some(Self::LightSalmon),
+            "lightseagreen" | "light sea green" => Some(Self::LightSeaGreen),
+            "lightskyblue" | "light sky blue" => Some(Self::LightSkyBlue),
+            "lightslategray" | "light slate gray" => Some(Self::LightSlateGray),
+            "lightsteelblue" | "light steel blue" => Some(Self::LightSteelBlue),
+            "lightyellow" | "light yellow" => Some(Self::LightYellow),
+            "lime" => Some(Self::Lime),
+            "limegreen" | "lime green" => Some(Self::LimeGreen),
+            "linen" => Some(Self::Linen),
+            "magenta" => Some(Self::Magenta),
+            "maroon" => Some(Self::Maroon),
+            "mediumaquamarine" | "medium aqua marine" => Some(Self::MediumAquaMarine),
+            "mediumblue" | "medium blue" => Some(Self::MediumBlue),
+            "mediumorchid" | "medium orchid" => Some(Self::MediumOrchid),
+            "mediumpurple" | "medium purple" => Some(Self::MediumPurple),
+            "mediumseagreen" | "medium sea green" => Some(Self::MediumSeaGreen),
+            "mediumslateblue" | "medium slate blue" => Some(Self::MediumSlateBlue),
+            "mediumspringgreen" | "medium spring green" => Some(Self::MediumSpringGreen),
+            "mediumturquoise" | "medium turquoise" => Some(Self::MediumTurquoise),
+            "mediumvioletred" | "medium violet red" => Some(Self::MediumVioletRed),
+            "midnightblue" | "midnight blue" => Some(Self::MidnightBlue),
+            "mintcream" | "mint cream" => Some(Self::MintCream),
+            "mistyrose" | "misty rose" => Some(Self::MistyRose),
+            "moccasin" => Some(Self::Moccasin),
+            "navajowhite" | "navajo white" => Some(Self::NavajoWhite),
+            "navy" => Some(Self::Navy),
+            "oldlace" | "old lace" => Some(Self::OldLace),
+            "olive" => Some(Self::Olive),
+            "olivedrab" | "olive drab" => Some(Self::OliveDrab),
+            "orange" => Some(Self::Orange),
+            "orangered" | "orange red" => Some(Self::OrangeRed),
+            "orchid" => Some(Self::Orchid),
+            "palegoldenrod" | "pale golden rod" => Some(Self::PaleGoldenRod),
+            "palegreen" | "pale green" => Some(Self::PaleGreen),
+            "paleturquoise" | "pale turquoise" => Some(Self::PaleTurquoise),
+            "palevioletred" | "pale violet red" => Some(Self::PaleVioletRed),
+            "papayawhip" | "papaya whip" => Some(Self::PapayaWhip),
+            "peachpuff" | "peach puff" => Some(Self::PeachPuff),
+            "peru" => Some(Self::Peru),
+            "pink" => Some(Self::Pink),
+            "plum" => Some(Self::Plum),
+            "powderblue" | "powder blue" => Some(Self::PowderBlue),
+            "purple" => Some(Self::Purple),
+            "red" => Some(Self::Red),
+            "rosybrown" | "rosy brown" => Some(Self::RosyBrown),
+            "royalblue" | "royal blue" => Some(Self::RoyalBlue),
+            "saddlebrown" | "saddle brown" => Some(Self::SaddleBrown),
+            "salmon" => Some(Self::Salmon),
+            "sandybrown" | "sandy brown" => Some(Self::SandyBrown),
+            "seagreen" | "sea green" => Some(Self::SeaGreen),
+            "seashell" | "sea shell" => Some(Self::SeaShell),
+            "sienna" => Some(Self::Sienna),
+            "silver" => Some(Self::Silver),
+            "skyblue" | "sky blue" => Some(Self::SkyBlue),
+            "slateblue" | "slate blue" => Some(Self::SlateBlue),
+            "slategray" | "slate gray" => Some(Self::SlateGray),
+            "snow" => Some(Self::Snow),
+            "springgreen" | "spring green" => Some(Self::SpringGreen),
+            "steelblue" | "steel blue" => Some(Self::SteelBlue),
+            "tan" => Some(Self::Tan),
+            "teal" => Some(Self::Teal),
+            "thistle" => Some(Self::Thistle),
+            "tomato" => Some(Self::Tomato),
+            "turquoise" => Some(Self::Turquoise),
+            "violet" => Some(Self::Violet),
+            "wheat" => Some(Self::Wheat),
+            "white" => Some(Self::White),
+            "whitesmoke" | "white smoke" => Some(Self::WhiteSmoke),
+            "yellow" => Some(Self::Yellow),
+            "yellowgreen" | "yellow green" => Some(Self::YellowGreen),
+            _ => None,
         }
     }
 
@@ -661,6 +967,26 @@ impl IntoIterator for Colors {
 
     fn into_iter(self) -> Self::IntoIter {
         crate::iter::ColorsIter::starting_with(self)
+    }
+}
+
+impl AsRef<str> for Colors {
+    fn as_ref(&self) -> &str {
+        self.name()
+    }
+}
+
+impl std::fmt::Display for Colors {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.name())
+    }
+}
+
+impl FromStr for Colors {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_name(s).ok_or(())
     }
 }
 
@@ -1147,6 +1473,68 @@ mod tests {
         assert_eq!(
             Colors::get_closest_color((25, 125, 250)),
             Colors::DodgerBlue
+        );
+    }
+
+    #[test]
+    fn from_name() {
+        let names = Colors::all().map(|c| (c, c.name())).collect::<Vec<_>>();
+        let names_upper = Colors::all()
+            .map(|c| (c, c.name().to_uppercase()))
+            .collect::<Vec<_>>();
+
+        for (color, name) in names {
+            assert_eq!(
+                Colors::from_name(name),
+                Some(color),
+                "from_name failed on color {} with name {}",
+                color,
+                name
+            );
+            assert_eq!(
+                Colors::from_str(name),
+                Ok(color),
+                "from_str failed on color {} with name {}",
+                color,
+                name
+            );
+            assert_eq!(
+                color.to_string(),
+                name,
+                "to_string failed on color {} with name {}",
+                color,
+                name
+            );
+            assert_eq!(
+                color.as_ref(),
+                name,
+                "as_ref failed on color {} with name {}",
+                color,
+                name
+            );
+        }
+
+        for (color, name) in names_upper {
+            assert_eq!(
+                Colors::from_name_ignore_case(name.as_str()),
+                Some(color),
+                "from_name_ignore_case failed on color {} with name {}",
+                color,
+                name
+            );
+        }
+
+        assert!(Colors::from_name("").is_none());
+        assert!(Colors::from_str(" ").is_err());
+        assert!(Colors::from_name_ignore_case("                 ").is_none());
+    }
+
+    #[test]
+    fn sizeof() {
+        assert_eq!(
+            std::mem::size_of::<Colors>(),
+            1,
+            "sizeof Colors should be 1"
         );
     }
 }
