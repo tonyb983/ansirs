@@ -1,5 +1,6 @@
 # Ansirs (Like Answers I Guess?)
 
+![Rust](https://github.com/tonyb983/ansirs/actions/workflows/rust.yml/badge.svg)
 [![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/tonyb983/ansirs)](https://rust-reportcard.xuri.me/report/github.com/tonyb983/ansirs)
 [![Coverage Status](https://coveralls.io/repos/github/tonyb983/ansirs/badge.svg?branch=main)](https://coveralls.io/github/tonyb983/ansirs?branch=main)
 
