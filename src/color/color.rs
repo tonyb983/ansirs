@@ -369,6 +369,14 @@ impl Color {
     }
 }
 
+/// TODO: Should this be changed?
+impl std::fmt::Display for Color {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let (r, g, b) = self.rgb();
+        write!(f, "Color({},{},{})", r, g, b)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -378,11 +386,12 @@ mod tests {
     fn hex() {
         let color = Color::from_rgb(25, 100, 250);
         assert_eq!(color.as_hex(), "#1964FA");
+        assert_eq!(color.as_hex_lower(), "#1964fa");
     }
 
     #[test]
     fn color_from_non_ascii() {
-        assert_eq!(Err(ColorParseError::BadChars), Color::from_hex("üßü"));
+        assert!(Color::from_hex("üßü").is_err());
     }
 
     #[test]
@@ -391,5 +400,19 @@ mod tests {
         assert_eq!(color.r(), 25);
         assert_eq!(color.g(), 100);
         assert_eq!(color.b(), 250);
+    }
+
+    #[test]
+    fn ansi_256_to_color() {
+        // Test that all u8s parse parsable without error or panic
+        for u in u8::MIN..=u8::MAX {
+            let _ = Color::ansi_256_to_color(u);
+        }
+    }
+
+    #[test]
+    fn display() {
+        let color = Color::from_rgb(25, 100, 250);
+        assert_eq!(color.to_string(), "Color(25,100,250)");
     }
 }

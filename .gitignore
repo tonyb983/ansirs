@@ -6,3 +6,4 @@ Cargo.lock
 scratch.txt
 /scratch*.txt
 /default.profraw
+**/*~

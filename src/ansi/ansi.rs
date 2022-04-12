@@ -593,4 +593,11 @@ mod tests {
             all_but_color
         );
     }
+
+    #[test]
+    fn color_inputs() {
+        let _red = Ansi::from_fg(crate::Colors::Red);
+        let _green = Ansi::from_fg((0, 255, 0));
+        let _blue = Ansi::from_fg(Color::from_hex("#0000ff").unwrap());
+    }
 }
