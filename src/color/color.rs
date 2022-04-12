@@ -93,7 +93,7 @@ impl Color {
         self.2
     }
 
-    pub const fn ansi_256_to_rgb_hex(input: u8) -> Self {
+    pub const fn ansi_256_to_color(input: u8) -> Self {
         let (r, g, b) = match input {
             //    8-bit, RGB hex
             // Primary 3-bit (8 colors). Unique representation!

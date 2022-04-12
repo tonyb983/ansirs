@@ -127,35 +127,78 @@ impl Ansi {
         let mut ansi = Self::new();
 
         // This is ugly as fuck!
-        if let Some(fg_rgb) = ansi_nums.iter().position(|n| *n == 38) {
-            let r = ansi_nums.get(fg_rgb + 2);
-            let g = ansi_nums.get(fg_rgb + 3);
-            let b = ansi_nums.get(fg_rgb + 4);
-            if let (Some(r), Some(g), Some(b)) = (r, g, b) {
-                ansi = ansi.fg((*r, *g, *b));
-                for _ in fg_rgb..fg_rgb + 5 {
-                    ansi_nums.remove(fg_rgb);
+        // Look for foreground RGB or 256 color code
+        if let Some(fg) = ansi_nums.iter().position(|n| *n == 38) {
+            if let Some(after) = ansi_nums.get(fg + 1) {
+                if *after == 2 {
+                    // This is a 3 digit RGB color code
+                    let r = ansi_nums.get(fg + 2);
+                    let g = ansi_nums.get(fg + 3);
+                    let b = ansi_nums.get(fg + 4);
+                    if let (Some(r), Some(g), Some(b)) = (r, g, b) {
+                        ansi = ansi.fg((*r, *g, *b));
+                        // Remove the 38, the 2, and the rgb values
+                        let _ = ansi_nums.drain(fg..fg + 5);
+                    } else {
+                        eprintln!("Unable to parse foreground color.");
+                        return None;
+                    }
+                } else if *after == 5 {
+                    // This is a single digit 256-color code
+                    if let Some(code) = ansi_nums.get(fg + 2) {
+                        ansi = ansi.fg(Color::ansi_256_to_color(*code));
+                        // Remove the 38, the 5, and the color code
+                        let _ = ansi_nums.drain(fg..fg + 3);
+                    } else {
+                        eprintln!("Unable to find color code after 38;2");
+                        return None;
+                    }
+                } else {
+                    eprintln!("Invalid number following 38: {}", *after);
+                    return None;
                 }
             } else {
-                eprintln!("Unable to parse foreground color.");
+                eprintln!("Unable to find color code after 38");
                 return None;
             }
         }
-        if let Some(bg_rgb) = ansi_nums.iter().position(|n| *n == 48) {
-            let r = ansi_nums.get(bg_rgb + 2);
-            let g = ansi_nums.get(bg_rgb + 3);
-            let b = ansi_nums.get(bg_rgb + 4);
-            if let (Some(r), Some(g), Some(b)) = (r, g, b) {
-                ansi = ansi.bg((*r, *g, *b));
-                for _ in bg_rgb..bg_rgb + 5 {
-                    ansi_nums.remove(bg_rgb);
+        // Look for background RGB or 256 color code
+        if let Some(bg) = ansi_nums.iter().position(|n| *n == 48) {
+            if let Some(after) = ansi_nums.get(bg + 1) {
+                if *after == 2 {
+                    // This is a 3 digit RGB color code
+                    let r = ansi_nums.get(bg + 2);
+                    let g = ansi_nums.get(bg + 3);
+                    let b = ansi_nums.get(bg + 4);
+                    if let (Some(r), Some(g), Some(b)) = (r, g, b) {
+                        ansi = ansi.bg((*r, *g, *b));
+                        // Remove the 48, the 2, and the rgb values
+                        let _ = ansi_nums.drain(bg..bg + 5);
+                    } else {
+                        eprintln!("Unable to parse foreground color.");
+                        return None;
+                    }
+                } else if *after == 5 {
+                    // This is a single digit 256-color code
+                    if let Some(code) = ansi_nums.get(bg + 2) {
+                        ansi = ansi.bg(Color::ansi_256_to_color(*code));
+                        // Remove the 48, the 5, and the color code.
+                        let _ = ansi_nums.drain(bg..bg + 3);
+                    } else {
+                        eprintln!("Unable to find color code after 48;2");
+                        return None;
+                    }
+                } else {
+                    eprintln!("Invalid number following 48: {}", *after);
+                    return None;
                 }
             } else {
-                eprintln!("Unable to parse background color.");
+                eprintln!("Unable to find color code after 48");
                 return None;
             }
         }
 
+        // With fore/back-ground out of the way, we can match on the remaining possibilities
         for num in ansi_nums {
             match num {
                 1 => ansi = ansi.bold(),
