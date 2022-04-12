@@ -9,10 +9,10 @@ use ansirs::{style_text, Ansi, Color};
 fn main() {
     for code in u8::MIN..=u8::MAX {
         let color = Color::ansi_256_to_color(code);
-        println!(
-            "Code {} = {}",
-            code,
-            style_text(color, Ansi::from_fg(color))
-        )
+        let padded = format!("{:03}", code);
+        print!("{} ", style_text(padded, Ansi::from_fg(color)));
+        if code % 8 == 7 {
+            println!();
+        }
     }
 }
