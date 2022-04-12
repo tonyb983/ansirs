@@ -408,4 +408,10 @@ mod tests {
             let _ = Color::ansi_256_to_color(u);
         }
     }
+
+    #[test]
+    fn display() {
+        let color = Color::from_rgb(25, 100, 250);
+        assert_eq!(color.to_string(), "Color(25,100,250)");
+    }
 }
