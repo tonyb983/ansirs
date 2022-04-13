@@ -9,45 +9,55 @@
 
 use crate::Ansi;
 
-pub struct PrettyString(/* todo!() */);
+pub struct PrettyString {
+    text: String,
+    format: Ansi,
+    formatted_text: String,
+}
 
 impl PrettyString {
     /// Create a new [`PrettyString`] from the given text and style.
     pub fn new(text: &str, format: Ansi) -> Self {
-        todo!()
+        PrettyString {
+            text: text.to_string(),
+            format,
+            formatted_text: format.paint_text(text),
+        }
     }
 
     /// Get the raw (unstyled) text contained in this [`PrettyString`].
     pub fn raw(&self) -> &str {
-        todo!()
+        &self.text
     }
 
     /// Get the current style of this [`PrettyString`].
     pub fn style(&self) -> &Ansi {
-        todo!()
+        &self.format
     }
 
     /// Get the formatted text contained in this [`PrettyString`].
     pub fn value(&self) -> &str {
-        todo!()
+        &self.formatted_text
     }
 
     /// Update the style of this [`PrettyString`] using the given function `F`.
     ///
     /// `F` will receive the current style and should return the new or modified style.
     pub fn modify_style<F: FnOnce(Option<Ansi>) -> Option<Ansi>>(&mut self, f: F) {
-        todo!()
+        if let Some(f) = f(Some(self.format)) {
+            self.format = f;
+        }
     }
 }
 
 impl std::fmt::Display for PrettyString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        write!(f, "{}", self.value())
     }
 }
 
 impl From<PrettyString> for String {
     fn from(pretty: PrettyString) -> Self {
-        todo!()
+        pretty.to_string()
     }
 }
