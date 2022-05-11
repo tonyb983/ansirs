@@ -12,25 +12,26 @@
 /// TODO: Much of this can probably be trimmed down and removed, keeping only the
 ///       functions that are actually used.
 /// Currently Unused:
-/// - all
-/// - from_bits
-/// - from_bits_truncate
-/// - from_bits_unchecked
-/// - is_all
-/// - intersects
-/// - intersection
-/// - union
-/// - difference
-/// - symmetric_difference
-/// - complement
-/// - insert
-/// - insert_to
-/// - remove
-/// - remove_to
-/// - toggle
-/// - set
+/// - `all`
+/// - `from_bits`
+/// - `from_bits_truncate`
+/// - `from_bits_unchecked`
+/// - `is_all`
+/// - `intersects`
+/// - `intersection`
+/// - `union`
+/// - `difference`
+/// - `symmetric_difference`
+/// - `complement`
+/// - `insert`
+/// - `insert_to`
+/// - `remove`
+/// - `remove_to`
+/// - `toggle`
+/// - `set`
 /// - bitwise operators (pretty much all)
 #[derive(Default, Copy, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AnsiFlags {
     bits: u8,
 }
@@ -51,12 +52,14 @@ impl AnsiFlags {
 
     /// Returns an empty set of flags.
     #[inline]
+    #[must_use]
     pub const fn empty() -> Self {
         Self { bits: 0 }
     }
 
     /// Returns the set containing all flags.
     #[inline]
+    #[must_use]
     pub const fn all() -> Self {
         Self {
             bits: <Self as BitFlags>::BOLD
@@ -70,6 +73,7 @@ impl AnsiFlags {
 
     /// Returns the raw value of the flags currently stored.
     #[inline]
+    #[must_use]
     pub const fn bits(&self) -> u8 {
         self.bits
     }
@@ -77,17 +81,19 @@ impl AnsiFlags {
     /// Convert from underlying bit representation, unless that
     /// representation contains bits that do not correspond to a flag.
     #[inline]
-    pub const fn from_bits(bits: u8) -> std::option::Option<Self> {
+    #[must_use]
+    pub const fn from_bits(bits: u8) -> Option<Self> {
         if (bits & !Self::all().bits()) == 0 {
-            std::option::Option::Some(Self { bits })
+            Some(Self { bits })
         } else {
-            std::option::Option::None
+            None
         }
     }
 
     /// Convert from underlying bit representation, dropping any bits
     /// that do not correspond to flags.
     #[inline]
+    #[must_use]
     pub const fn from_bits_truncate(bits: u8) -> Self {
         Self {
             bits: bits & Self::all().bits,
@@ -106,24 +112,28 @@ impl AnsiFlags {
     /// all bits correspond to a defined flag or that extra bits
     /// are valid for this bitflags type.
     #[inline]
+    #[must_use]
     pub const unsafe fn from_bits_unchecked(bits: u8) -> Self {
         Self { bits }
     }
 
     /// Returns `true` if no flags are currently stored.
     #[inline]
+    #[must_use]
     pub const fn is_empty(&self) -> bool {
         self.bits() == Self::empty().bits()
     }
 
     /// Returns `true` if all flags are currently set.
     #[inline]
+    #[must_use]
     pub const fn is_all(&self) -> bool {
         Self::all().bits | self.bits == self.bits
     }
 
     /// Returns `true` if there are flags common to both `self` and `other`.
     #[inline]
+    #[must_use]
     pub const fn intersects(&self, other: Self) -> bool {
         !(Self {
             bits: self.bits & other.bits,
@@ -133,6 +143,7 @@ impl AnsiFlags {
 
     /// Returns `true` if all of the flags in `other` are contained within `self`.
     #[inline]
+    #[must_use]
     pub const fn contains(&self, other: Self) -> bool {
         (self.bits & other.bits) == other.bits
     }
@@ -369,7 +380,7 @@ impl std::ops::Not for AnsiFlags {
 impl std::iter::Extend<AnsiFlags> for AnsiFlags {
     fn extend<T: std::iter::IntoIterator<Item = Self>>(&mut self, iterator: T) {
         for item in iterator {
-            self.insert(item)
+            self.insert(item);
         }
     }
 }
@@ -382,7 +393,7 @@ impl std::iter::FromIterator<AnsiFlags> for AnsiFlags {
 }
 
 impl std::fmt::Debug for AnsiFlags {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut first = true;
         if <Self as BoolFlags>::BOLD(self) {
             if !first {
@@ -442,22 +453,22 @@ impl std::fmt::Debug for AnsiFlags {
     }
 }
 impl std::fmt::Binary for AnsiFlags {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Binary::fmt(&self.bits, f)
     }
 }
 impl std::fmt::Octal for AnsiFlags {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Octal::fmt(&self.bits, f)
     }
 }
 impl std::fmt::LowerHex for AnsiFlags {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::LowerHex::fmt(&self.bits, f)
     }
 }
 impl std::fmt::UpperHex for AnsiFlags {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::UpperHex::fmt(&self.bits, f)
     }
 }
@@ -641,6 +652,7 @@ mod tests {
 
     #[test]
     fn ops_binary() {
+        #[allow(clippy::wildcard_imports)]
         use std::ops::*;
         let mut bold = AnsiFlags::BOLD;
         let out = bold.bitand(AnsiFlags::BOLD | AnsiFlags::UNDERLINE);

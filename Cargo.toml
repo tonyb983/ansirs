@@ -9,6 +9,14 @@ name = "ansirs"
 repository = "https://www.github.com/tonyb983/ansirs"
 version = "0.1.5"
 
+[features]
+default = []
+serde = ["dep:serde"]
+
+[dependencies]
+serde = { version = "1.0.137", features = ["derive"], optional = true }
+
+
 [dev-dependencies]
 pretty_assertions = "1.2.1"
 

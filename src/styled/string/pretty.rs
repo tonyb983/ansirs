@@ -21,16 +21,21 @@ use crate::{Ansi, IntoAnsi};
 /// Potential third stage is (String, usize)
 /// Sizeof = 32 bytes
 /// This would represent the text (including the formatting) and the length of the original text.
-/// We can always retrieve the original text using the stored length, and the known offset of the reset text (Ansi::SUFFIX).
+/// We can always retrieve the original text using the stored length, and the known offset of the ansi suffix ([`Ansi::SUFFIX`]).
 /// This would require an Ansi function that can parse a string of ansi codes.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct PrettyString(String, Option<Ansi>);
 
 impl PrettyString {
+    /// Create a [`PrettyString`] with no styling.
+    #[must_use]
     pub fn plain(s: impl Into<String>) -> Self {
         Self(s.into(), None)
     }
 
+    /// Takes a plain string `text` and a style `format`.
+    #[must_use]
     pub fn new(text: impl AsRef<str>, format: impl IntoAnsi) -> Self {
         let text = text.as_ref().to_string();
         let style = format.into_ansi();
@@ -44,24 +49,39 @@ impl PrettyString {
         )
     }
 
+    /// Get the "raw" (aka unstyled / original) text.
+    #[must_use]
     pub fn raw(&self) -> &str {
         self.0.as_str()
     }
 
+    /// Get the [`Ansi`] styling applied to this text.
+    #[must_use]
     pub fn style(&self) -> Option<&Ansi> {
         self.1.as_ref()
     }
 
+    /// Modify the styling applied to this text using the given closure.
     pub fn modify_style<F: FnMut(Option<&Ansi>) -> Option<Ansi>>(&mut self, mut f: F) {
         self.1 = f(self.1.as_ref());
     }
 
+    /// Get the formatted value of this [`PrettyString`].
+    #[must_use]
     pub fn value(&self) -> String {
         self.to_string()
     }
 
+    /// Gets the length of the ***original text***, i.e. the VISIBLE length.
+    #[must_use]
     pub fn len(&self) -> usize {
         self.0.len()
+    }
+
+    /// Checks if the original / **visible** text is empty
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 }
 

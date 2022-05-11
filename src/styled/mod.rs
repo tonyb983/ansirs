@@ -6,7 +6,11 @@
 
 use crate::{Ansi, IntoAnsi};
 
-mod string;
+/// `string` Module
+///
+/// This module contains some experiments with storing a formatted string, i.e. a
+/// wrapped [`String`] that also contains an [`Ansi`](crate::Ansi) style.
+pub mod string;
 
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
 /// `S` can be either an [`Ansi`](Ansi) or a closure that returns an [`Ansi`](Ansi). This might
@@ -26,15 +30,20 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
     }
 }
 
+/// Shortcut to call `print!` with the output of `style_text`.
 pub fn styled_print<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     print!("{}", style_text(text, style));
 }
 
+/// Shortcut to call `println!` with the output of `style_text`.
 pub fn styled_println<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     println!("{}", style_text(text, style));
 }
 
+/// Trait used to add a `style` "extension method" to any type that implements [`Display`](std::fmt::Display)
+/// as a convenience to call `style_text`.
 pub trait Styled {
+    /// Style this value using the given `style`.
     fn style(&self, style: impl IntoAnsi) -> String;
 }
 

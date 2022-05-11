@@ -40,6 +40,7 @@ use crate::{AnsiFlags, Color, ToColor};
 /// # assert_eq!(style2.to_string(), "\x1b[3;9;48;2;0;0;75m");
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Ansi {
     fg: Option<Color>,
     bg: Option<Color>,
@@ -62,6 +63,7 @@ impl Ansi {
     }
 
     /// Creates a new Ansi from the given foreground color.
+    #[allow(clippy::needless_pass_by_value)]
     #[must_use]
     pub fn from_fg(fg: impl ToColor) -> Self {
         Self {
@@ -72,6 +74,7 @@ impl Ansi {
     }
 
     /// Creates a new Ansi from the given background color.
+    #[allow(clippy::needless_pass_by_value)]
     #[must_use]
     pub fn from_bg(bg: impl ToColor) -> Self {
         Self {
@@ -105,6 +108,10 @@ impl Ansi {
         "\x1b[0m"
     }
 
+    /// Simple parser implementation which accepts a string containing ansi escape codes
+    /// ***OR*** text surrounded by ansi escape codes, and attempts to extract the styling
+    /// into an [`Ansi`] instance.
+    #[must_use]
     pub fn parse_ansi_text(input: &str) -> Option<Ansi> {
         if !input.starts_with(Self::PREFIX) {
             eprintln!("Invalid prefix for ansi color codes.");
@@ -138,7 +145,7 @@ impl Ansi {
                     if let (Some(r), Some(g), Some(b)) = (r, g, b) {
                         ansi = ansi.fg((*r, *g, *b));
                         // Remove the 38, the 2, and the rgb values
-                        let _ = ansi_nums.drain(fg..fg + 5);
+                        let _removed = ansi_nums.drain(fg..fg + 5);
                     } else {
                         eprintln!("Unable to parse foreground color.");
                         return None;
@@ -148,7 +155,7 @@ impl Ansi {
                     if let Some(code) = ansi_nums.get(fg + 2) {
                         ansi = ansi.fg(Color::ansi_256_to_color(*code));
                         // Remove the 38, the 5, and the color code
-                        let _ = ansi_nums.drain(fg..fg + 3);
+                        let _removed = ansi_nums.drain(fg..fg + 3);
                     } else {
                         eprintln!("Unable to find color code after 38;2");
                         return None;
@@ -173,7 +180,7 @@ impl Ansi {
                     if let (Some(r), Some(g), Some(b)) = (r, g, b) {
                         ansi = ansi.bg((*r, *g, *b));
                         // Remove the 48, the 2, and the rgb values
-                        let _ = ansi_nums.drain(bg..bg + 5);
+                        let _removed = ansi_nums.drain(bg..bg + 5);
                     } else {
                         eprintln!("Unable to parse foreground color.");
                         return None;
@@ -183,7 +190,7 @@ impl Ansi {
                     if let Some(code) = ansi_nums.get(bg + 2) {
                         ansi = ansi.bg(Color::ansi_256_to_color(*code));
                         // Remove the 48, the 5, and the color code.
-                        let _ = ansi_nums.drain(bg..bg + 3);
+                        let _removed = ansi_nums.drain(bg..bg + 3);
                     } else {
                         eprintln!("Unable to find color code after 48;2");
                         return None;
@@ -236,6 +243,7 @@ impl Ansi {
     }
 
     /// Builder function to set the foreground color.
+    #[allow(clippy::needless_pass_by_value)]
     #[must_use]
     pub fn fg(self, fg: impl ToColor) -> Self {
         Self {
@@ -251,6 +259,7 @@ impl Ansi {
     }
 
     /// Builder function to set the background color.
+    #[allow(clippy::needless_pass_by_value)]
     #[must_use]
     pub fn bg(self, bg: impl ToColor) -> Self {
         Self {
@@ -320,11 +329,10 @@ impl Ansi {
     }
 
     /// Creates a string from this `Ansi` using a `String` to store temporary data.
-    /// TODO: This can probably be renamed to `build` now. Previously I was testing
-    ///       performance of using a [`Vec`] vs a [`String`] to store the temporarily
-    ///       store the data, but [`String`] won hands down.
     #[must_use]
-    fn build_string(&self) -> String {
+    fn build_ansi_string(&self) -> String {
+        use std::fmt::Write;
+
         if self.is_default() {
             return "".to_string();
         }
@@ -389,7 +397,9 @@ impl Ansi {
             } else {
                 ansi.push_str("38;2;");
             }
-            ansi.push_str(&format!("{};{};{}", r, g, b));
+
+            write!(ansi, "{};{};{}", r, g, b).expect("Failed to write! to string");
+            // ansi.push_str(&format!("{};{};{}", r, g, b));
             modified = true;
         }
 
@@ -400,7 +410,8 @@ impl Ansi {
             } else {
                 ansi.push_str("48;2;");
             }
-            ansi.push_str(&format!("{};{};{}", r, g, b));
+            write!(ansi, "{};{};{}", r, g, b).expect("Failed to write! to string");
+            // ansi.push_str(&format!("{};{};{}", r, g, b));
             modified = true;
         }
 
@@ -415,12 +426,13 @@ impl Ansi {
     /// Convenience function that uses this [`Ansi`] to style the given [`text`],
     /// sandwiching the text between the color code generated by this [`Ansi`] and
     /// [`Ansi::reset`].
+    #[must_use]
     pub fn paint_text(&self, text: &str) -> String {
         if self.is_default() {
             return text.to_string();
         }
 
-        format!("{}{}{}", self.build_string(), text, Self::reset())
+        format!("{}{}{}", self.build_ansi_string(), text, Self::reset())
     }
 }
 
@@ -432,7 +444,7 @@ impl Default for Ansi {
 
 impl std::fmt::Display for Ansi {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.build_string())
+        write!(f, "{}", self.build_ansi_string())
     }
 }
 
@@ -589,8 +601,8 @@ mod tests {
 
         assert_eq!(all_but_color.to_string(), "\u{1b}[1;3;4;5;7;9m");
         assert_eq!(
-            Ansi::parse_ansi_text("\u{1b}[1;3;4;5;7;9m").unwrap(),
-            all_but_color
+            Ansi::parse_ansi_text("\u{1b}[1;3;4;5;7;9m"),
+            Some(all_but_color)
         );
     }
 

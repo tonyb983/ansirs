@@ -8,15 +8,20 @@ use crate::{Ansi, ColorParseError};
 
 /// Wrapper struct around a (u8, u8, u8) tuple.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Color(u8, u8, u8);
 
 impl Color {
     /// Create a new color from the given RGB values.
+    #[must_use]
     pub const fn from_rgb(r: u8, g: u8, b: u8) -> Self {
         Self(r, g, b)
     }
 
     /// Attempt to create a new color from the given hexadecimal string.
+    ///
+    /// ## Errors
+    /// - `ColorParseError` if the given input string cannot be converted to a color.
     pub fn from_hex<S: AsRef<str>>(input: S) -> Result<Self, ColorParseError> {
         fn convert(input: &str) -> Result<u8, ColorParseError> {
             u8::from_str_radix(input, 16).map_err(ColorParseError::ParseIntError)
@@ -64,37 +69,46 @@ impl Color {
     }
 
     /// Create a hex string from this color.
+    #[must_use]
     pub fn as_hex(&self) -> String {
         format!("#{:02X}{:02X}{:02X}", self.0, self.1, self.2)
     }
 
     /// Create a hex string from this color.
+    #[must_use]
     pub fn as_hex_lower(&self) -> String {
         format!("#{:02x}{:02x}{:02x}", self.0, self.1, self.2)
     }
 
     /// Get the RGB tuple of this color.
+    #[must_use]
     pub const fn rgb(&self) -> (u8, u8, u8) {
         (self.0, self.1, self.2)
     }
 
     /// Get the **Red** value of this color.
+    #[must_use]
     pub const fn r(&self) -> u8 {
         self.0
     }
 
     /// Get the **Green** value of this color.
+    #[must_use]
     pub const fn g(&self) -> u8 {
         self.1
     }
 
     /// Get the **Blue** value of this color.
+    #[must_use]
     pub const fn b(&self) -> u8 {
         self.2
     }
 
+    /// Converts an ANSI-256 color number to an rgb [`Color`].
+    #[allow(clippy::match_same_arms, clippy::too_many_lines)]
+    #[must_use]
     pub const fn ansi_256_to_color(input: u8) -> Self {
-        let (r, g, b) = match input {
+        let (r, g, b): (u8, u8, u8) = match input {
             //    8-bit, RGB hex
             // Primary 3-bit (8 colors). Unique representation!
             0 => (0x00, 0x00, 0x00),
@@ -361,9 +375,11 @@ impl Color {
             255 => (0xee, 0xee, 0xee),
         };
 
-        Self::from_rgb(r as u8, g as u8, b as u8)
+        Self::from_rgb(r, g, b)
     }
 
+    /// Converts this color into an [`Ansi`] instance by using it as the **foreground** color.
+    #[must_use]
     pub fn into_ansi(self) -> Ansi {
         Ansi::from_fg(self)
     }
@@ -371,7 +387,7 @@ impl Color {
 
 /// TODO: Should this be changed?
 impl std::fmt::Display for Color {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let (r, g, b) = self.rgb();
         write!(f, "Color({},{},{})", r, g, b)
     }

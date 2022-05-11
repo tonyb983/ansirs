@@ -10,155 +10,302 @@ use crate::Color;
 
 /// Enum containing known named colors.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Colors {
+    /// Html color "AliceBlue"
     AliceBlue,
+    /// Html color "AntiqueWhite"
     AntiqueWhite,
+    /// Html color "Aqua"
     Aqua,
+    /// Html color "AquaMarine"
     AquaMarine,
+    /// Html color "Azure"
     Azure,
+    /// Html color "Beige"
     Beige,
+    /// Html color "Bisque"
     Bisque,
+    /// Html color "Black"
     Black,
+    /// Html color "BlanchedAlmond"
     BlanchedAlmond,
+    /// Html color "Blue"
     Blue,
+    /// Html color "BlueViolet"
     BlueViolet,
+    /// Html color "Brown"
     Brown,
+    /// Html color "BurlyWood"
     BurlyWood,
+    /// Html color "CadetBlue"
     CadetBlue,
+    /// Html color "Chartreuse"
     Chartreuse,
+    /// Html color "Chocolate"
     Chocolate,
+    /// Html color "Coral"
     Coral,
+    /// Html color "CornFlowerBlue"
     CornFlowerBlue,
+    /// Html color "CornSilk"
     CornSilk,
+    /// Html color "Crimson"
     Crimson,
+    /// Html color "Cyan"
     Cyan,
+    /// Html color "DarkBlue"
     DarkBlue,
+    /// Html color "DarkCyan"
     DarkCyan,
+    /// Html color "DarkGoldenRod"
     DarkGoldenRod,
+    /// Html color "DarkGray"
     DarkGray,
+    /// Html color "DarkGreen"
     DarkGreen,
+    /// Html color "DarkGrey"
     DarkGrey,
+    /// Html color "DarkKhaki"
     DarkKhaki,
+    /// Html color "DarkMagenta"
     DarkMagenta,
+    /// Html color "DarkOliveGreen"
     DarkOliveGreen,
+    /// Html color "DarkOrange"
     DarkOrange,
+    /// Html color "DarkOrchid"
     DarkOrchid,
+    /// Html color "DarkRed"
     DarkRed,
+    /// Html color "DarkSalmon"
     DarkSalmon,
+    /// Html color "DarkSeaGreen"
     DarkSeaGreen,
+    /// Html color "DarkSlateBlue"
     DarkSlateBlue,
+    /// Html color "DarkSlateGray"
     DarkSlateGray,
+    /// Html color "DarkTurquoise"
     DarkTurquoise,
+    /// Html color "DarkViolet"
     DarkViolet,
+    /// Html color "DeepPink"
     DeepPink,
+    /// Html color "DeepSkyBlue"
     DeepSkyBlue,
+    /// Html color "DimGray"
     DimGray,
+    /// Html color "DimGrey"
     DimGrey,
+    /// Html color "DodgerBlue"
     DodgerBlue,
+    /// Html color "Firebrick"
     Firebrick,
+    /// Html color "FloralWhite"
     FloralWhite,
+    /// Html color "ForestGreen"
     ForestGreen,
+    /// Html color "Fuchsia"
     Fuchsia,
+    /// Html color "Gainsboro"
     Gainsboro,
+    /// Html color "GhostWhite"
     GhostWhite,
+    /// Html color "Gold"
     Gold,
+    /// Html color "GoldenRod"
     GoldenRod,
+    /// Html color "Gray"
     Gray,
+    /// Html color "Green"
     Green,
+    /// Html color "GreenYellow"
     GreenYellow,
+    /// Html color "Grey"
     Grey,
+    /// Html color "Honeydew"
     Honeydew,
+    /// Html color "HotPink"
     HotPink,
+    /// Html color "IndianRed"
     IndianRed,
+    /// Html color "Indigo"
     Indigo,
+    /// Html color "Ivory"
     Ivory,
+    /// Html color "Khaki"
     Khaki,
+    /// Html color "Lavender"
     Lavender,
+    /// Html color "LavenderBlush"
     LavenderBlush,
+    /// Html color "LawnGreen"
     LawnGreen,
+    /// Html color "LemonChiffon"
     LemonChiffon,
+    /// Html color "LightBlue"
     LightBlue,
+    /// Html color "LightCoral"
     LightCoral,
+    /// Html color "LightCyan"
     LightCyan,
+    /// Html color "LightGoldenRodYellow"
     LightGoldenRodYellow,
+    /// Html color "LightGray"
     LightGray,
+    /// Html color "LightGreen"
     LightGreen,
+    /// Html color "LightGrey"
     LightGrey,
+    /// Html color "LightPink"
     LightPink,
+    /// Html color "LightSalmon"
     LightSalmon,
+    /// Html color "LightSeaGreen"
     LightSeaGreen,
+    /// Html color "LightSkyBlue"
     LightSkyBlue,
+    /// Html color "LightSlateGray"
     LightSlateGray,
+    /// Html color "LightSteelBlue"
     LightSteelBlue,
+    /// Html color "LightYellow"
     LightYellow,
+    /// Html color "Lime"
     Lime,
+    /// Html color "LimeGreen"
     LimeGreen,
+    /// Html color "Linen"
     Linen,
+    /// Html color "Magenta"
     Magenta,
+    /// Html color "Maroon"
     Maroon,
+    /// Html color "MediumAquaMarine"
     MediumAquaMarine,
+    /// Html color "MediumBlue"
     MediumBlue,
+    /// Html color "MediumOrchid"
     MediumOrchid,
+    /// Html color "MediumPurple"
     MediumPurple,
+    /// Html color "MediumSeaGreen"
     MediumSeaGreen,
+    /// Html color "MediumSlateBlue"
     MediumSlateBlue,
+    /// Html color "MediumSpringGreen"
     MediumSpringGreen,
+    /// Html color "MediumTurquoise"
     MediumTurquoise,
+    /// Html color "MediumVioletRed"
     MediumVioletRed,
+    /// Html color "MidnightBlue"
     MidnightBlue,
+    /// Html color "MintCream"
     MintCream,
+    /// Html color "MistyRose"
     MistyRose,
+    /// Html color "Moccasin"
     Moccasin,
+    /// Html color "NavajoWhite"
     NavajoWhite,
+    /// Html color "Navy"
     Navy,
+    /// Html color "OldLace"
     OldLace,
+    /// Html color "Olive"
     Olive,
+    /// Html color "OliveDrab"
     OliveDrab,
+    /// Html color "Orange"
     Orange,
+    /// Html color "OrangeRed"
     OrangeRed,
+    /// Html color "Orchid"
     Orchid,
+    /// Html color "PaleGoldenRod"
     PaleGoldenRod,
+    /// Html color "PaleGreen"
     PaleGreen,
+    /// Html color "PaleTurquoise"
     PaleTurquoise,
+    /// Html color "PaleVioletRed"
     PaleVioletRed,
+    /// Html color "PapayaWhip"
     PapayaWhip,
+    /// Html color "PeachPuff"
     PeachPuff,
+    /// Html color "Peru"
     Peru,
+    /// Html color "Pink"
     Pink,
+    /// Html color "Plum"
     Plum,
+    /// Html color "PowderBlue"
     PowderBlue,
+    /// Html color "Purple"
     Purple,
+    /// Html color "Red"
     Red,
+    /// Html color "RosyBrown"
     RosyBrown,
+    /// Html color "RoyalBlue"
     RoyalBlue,
+    /// Html color "SaddleBrown"
     SaddleBrown,
+    /// Html color "Salmon"
     Salmon,
+    /// Html color "SandyBrown"
     SandyBrown,
+    /// Html color "SeaGreen"
     SeaGreen,
+    /// Html color "SeaShell"
     SeaShell,
+    /// Html color "Sienna"
     Sienna,
+    /// Html color "Silver"
     Silver,
+    /// Html color "SkyBlue"
     SkyBlue,
+    /// Html color "SlateBlue"
     SlateBlue,
+    /// Html color "SlateGray"
     SlateGray,
+    /// Html color "Snow"
     Snow,
+    /// Html color "SpringGreen"
     SpringGreen,
+    /// Html color "SteelBlue"
     SteelBlue,
+    /// Html color "Tan"
     Tan,
+    /// Html color "Teal"
     Teal,
+    /// Html color "Thistle"
     Thistle,
+    /// Html color "Tomato"
     Tomato,
+    /// Html color "Turquoise"
     Turquoise,
+    /// Html color "Violet"
     Violet,
+    /// Html color "Wheat"
     Wheat,
+    /// Html color "White"
     White,
+    /// Html color "WhiteSmoke"
     WhiteSmoke,
+    /// Html color "Yellow"
     Yellow,
+    /// Html color "YellowGreen"
     YellowGreen,
 }
 
+#[allow(clippy::too_many_lines)]
 impl Colors {
     /// Get the name of this color.
+    #[must_use]
     pub const fn name(&self) -> &'static str {
         match self {
             Self::AliceBlue => "AliceBlue",
@@ -310,6 +457,7 @@ impl Colors {
 
     /// Try to get a named color from the given string.
     /// #### Non-const function.
+    #[must_use]
     pub fn from_name(input: &str) -> Option<Self> {
         match input {
             "AliceBlue" | "Alice Blue" => Some(Self::AliceBlue),
@@ -462,6 +610,7 @@ impl Colors {
 
     /// Try to get a named color from the given name (compared as lowercase strings).
     /// #### Non-const function.
+    #[must_use]
     pub fn from_name_ignore_case(input: &str) -> Option<Self> {
         match input.to_lowercase().as_str() {
             "aliceblue" | "alice blue" => Some(Self::AliceBlue),
@@ -615,6 +764,7 @@ impl Colors {
     /// Get the next named color. Pretty much only useful for iteration.
     ///
     /// TODO: This should probably be private?
+    #[must_use]
     pub const fn next(self) -> Self {
         match self {
             Self::AliceBlue => Self::AntiqueWhite,
@@ -764,7 +914,9 @@ impl Colors {
         }
     }
 
-    /// Get the RGB values of this color.
+    /// Get the RGB values of this named color.
+    #[allow(clippy::match_same_arms)]
+    #[must_use]
     pub const fn rgb(&self) -> (u8, u8, u8) {
         match self {
             Colors::AliceBlue => (240, 248, 255),
@@ -915,6 +1067,7 @@ impl Colors {
     }
 
     /// Creates a [`Color`] from this named [`Colors`].
+    #[must_use]
     pub const fn into_color(self) -> Color {
         let (r, g, b) = self.rgb();
         Color::from_rgb(r, g, b)
@@ -926,9 +1079,10 @@ impl Colors {
         Self::AliceBlue.into_iter()
     }
 
-    /// Gets the closest named color to the rgb values given using simple absolute difference calculations
+    /// Gets the closest named color to the rgb values given using simple absolute difference calculations.
     ///
-    /// TODO: This can probably be better right?
+    /// # **This is a very expensive operation.**
+    #[must_use]
     pub fn get_closest_color(input: (u8, u8, u8)) -> Option<(Self, usize)> {
         fn abs_diff(a: usize, b: usize) -> usize {
             if a > b {
@@ -986,6 +1140,8 @@ impl FromStr for Colors {
 pub mod iter {
     use super::Colors;
 
+    /// Simple iterator over named colors using [`Colors::next`] to iterate
+    /// over the colors in alphabetical order.
     pub struct ColorsIter {
         current: Option<Colors>,
     }
@@ -1002,10 +1158,15 @@ pub mod iter {
         const FIRST: Colors = Colors::AliceBlue;
         const LAST: Colors = Colors::YellowGreen;
 
+        /// Creates a new iterator starting with the first color (in alphabetical order),
+        /// i.e. [`Colors::AliceBlue`].
+        #[must_use]
         pub fn new() -> Self {
-            Default::default()
+            Self::default()
         }
 
+        /// Creates a new iterator starting at the given color.
+        #[must_use]
         pub fn starting_with(color: Colors) -> Self {
             Self {
                 current: Some(color),
@@ -1038,12 +1199,13 @@ pub mod iter {
 
         #[test]
         fn default() {
-            let mut iter: ColorsIter = Default::default();
+            let mut iter = ColorsIter::default();
             assert_eq!(iter.next(), Some(Colors::AliceBlue));
         }
     }
 }
 
+#[allow(clippy::too_many_lines)]
 #[cfg(test)]
 mod tests {
     use super::*;
