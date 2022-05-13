@@ -1,7 +1,8 @@
 # Ansirs (Like Answers I Guess?)
 
 ![GitHub](https://img.shields.io/github/license/tonyb983/ansirs)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/tonyb983/ansirs/Rust?label=build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/tonyb983/ansirs/Rust%20&#40;Cached&#41;?label=Stable)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/tonyb983/ansirs/Rust%20Nightly%20&#40;Cached&#41;?label=Nightly)
 [![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/tonyb983/ansirs)](https://rust-reportcard.xuri.me/report/github.com/tonyb983/ansirs)
 [![Coverage Status](https://coveralls.io/repos/github/tonyb983/ansirs/badge.svg?branch=main)](https://coveralls.io/github/tonyb983/ansirs?branch=main)
 ![GitHub last commit](https://img.shields.io/github/last-commit/tonyb983/ansirs)

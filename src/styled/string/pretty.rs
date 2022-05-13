@@ -105,3 +105,74 @@ impl From<&PrettyString> for String {
         pretty.0.clone()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::Ansi;
+    use pretty_assertions::{assert_eq, assert_ne};
+
+    #[test]
+    fn basic_usage() {
+        let style = Ansi::new().fg((25, 100, 250)).bold().underline();
+        let text = "Hello, World!";
+        let pretty = PrettyString::new(text, style);
+        assert_eq!(pretty.raw(), text);
+        assert_eq!(pretty.style(), Some(&style));
+        assert_eq!(
+            pretty.to_string(),
+            format!("{}{}{}", style, text, Ansi::reset())
+        );
+    }
+
+    #[test]
+    fn plain() {
+        assert_eq!(
+            PrettyString::plain("Hello, World!").to_string(),
+            "Hello, World!"
+        );
+        let style = Ansi::new().fg((25, 100, 250)).bold().underline();
+        let text = "Hello, World!";
+        let mut pretty = PrettyString::new(text, style);
+        assert_ne!(pretty.to_string(), text);
+        pretty.modify_style(|_| None);
+        assert_eq!(pretty.to_string(), text);
+        assert_eq!(PrettyString::plain(text), pretty);
+        assert_eq!(PrettyString::new(text, Ansi::default()), pretty);
+        assert_eq!(
+            PrettyString::new(text, Ansi::default()),
+            PrettyString::plain(text)
+        );
+    }
+
+    #[test]
+    fn modify_style() {
+        let style1 = Ansi::new().fg((25, 100, 250)).bold().underline();
+        let style2 = Ansi::new().bg((25, 100, 250)).italic().strike();
+        let text = "Hello, World!";
+        let mut pretty = PrettyString::new(text, style1);
+        assert_eq!(pretty.raw(), text);
+        assert_eq!(pretty.style(), Some(&style1));
+        assert_eq!(
+            pretty.to_string(),
+            format!("{}{}{}", style1, text, Ansi::reset())
+        );
+
+        pretty.modify_style(|_| Some(style2));
+        assert_eq!(pretty.raw(), text);
+        assert_eq!(pretty.style(), Some(&style2));
+        assert_eq!(
+            pretty.to_string(),
+            format!("{}{}{}", style2, text, Ansi::reset())
+        );
+    }
+
+    #[test]
+    fn conversion() {
+        use std::borrow::Borrow;
+        let style = Ansi::new().fg((25, 250, 75)).blink();
+        let pretty = PrettyString::new("Hello", style);
+        let string: String = pretty.borrow().into();
+        assert_eq!(string, "Hello");
+    }
+}

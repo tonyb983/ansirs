@@ -10,6 +10,7 @@ use crate::{Ansi, IntoAnsi};
 ///
 /// This module contains some experiments with storing a formatted string, i.e. a
 /// wrapped [`String`] that also contains an [`Ansi`](crate::Ansi) style.
+#[cfg(feature = "strings")]
 pub mod string;
 
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
@@ -54,6 +55,33 @@ where
     fn style(&self, style: impl IntoAnsi) -> String {
         style_text(self.to_string(), style)
     }
+}
+
+/// Trait that is currently only used to try and normalize the interface between my variations
+/// of styled strings.
+pub trait StyledString {
+    /// Get the "raw" (aka unstyled / original) text.
+    #[must_use]
+    fn raw(&self) -> &str;
+
+    /// Get the [`Ansi`] styling applied to this text.
+    #[must_use]
+    fn style(&self) -> Option<&Ansi>;
+
+    /// Modify the styling applied to this text using the given closure.
+    fn modify_style<F: FnMut(Option<&Ansi>) -> Option<Ansi>>(&mut self, f: F);
+
+    /// Get the formatted value of this [`StyledString`].
+    #[must_use]
+    fn value(&self) -> String;
+
+    /// Gets the length of the ***original text***, i.e. the VISIBLE length.
+    #[must_use]
+    fn len(&self) -> usize;
+
+    /// Checks if the original / **visible** text is empty
+    #[must_use]
+    fn is_empty(&self) -> bool;
 }
 
 #[cfg(test)]

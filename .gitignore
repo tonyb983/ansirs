@@ -1,10 +1,13 @@
-/target
-Cargo.lock
 /.vscode
 /cov
 /coverage
-/rust.code-workspace
-scratch.txt
-/scratch*.txt
 /default.profraw
+/rust.code-workspace
+/scratch*.txt
+/target
+
+Cargo.lock
+scratch.txt
+
+# VIM style backup files
 **/*~
