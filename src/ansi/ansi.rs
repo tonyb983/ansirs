@@ -54,6 +54,7 @@ impl Ansi {
 
     /// Creates a new / empty / default Ansi instance.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn new() -> Self {
         Self {
             fg: None,
@@ -65,6 +66,7 @@ impl Ansi {
     /// Creates a new Ansi from the given foreground color.
     #[allow(clippy::needless_pass_by_value)]
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn from_fg(fg: impl ToColor) -> Self {
         Self {
             fg: Some(fg.to_color()),
@@ -76,6 +78,7 @@ impl Ansi {
     /// Creates a new Ansi from the given background color.
     #[allow(clippy::needless_pass_by_value)]
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn from_bg(bg: impl ToColor) -> Self {
         Self {
             fg: None,
@@ -86,24 +89,28 @@ impl Ansi {
 
     /// Creates a new Ansi with a red foreground color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn red() -> Self {
         Self::from_fg((255, 0, 0))
     }
 
     /// Creates a new Ansi with a green foreground color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn green() -> Self {
         Self::from_fg((0, 255, 0))
     }
 
     /// Creates a new Ansi with a blue foreground color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn blue() -> Self {
         Self::from_fg((0, 0, 255))
     }
 
     /// Reset the terminal to default styling.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn reset() -> &'static str {
         "\x1b[0m"
     }
@@ -112,6 +119,7 @@ impl Ansi {
     /// ***OR*** text surrounded by ansi escape codes, and attempts to extract the styling
     /// into an [`Ansi`] instance.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn parse_ansi_text(input: &str) -> Option<Ansi> {
         if !input.starts_with(Self::PREFIX) {
             eprintln!("Invalid prefix for ansi color codes.");
@@ -226,6 +234,7 @@ impl Ansi {
 impl Ansi {
     /// Clear the Ansi object entirely.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[allow(clippy::needless_update)]
     pub const fn clear(self) -> Self {
         Self {
@@ -238,12 +247,14 @@ impl Ansi {
 
     /// Returns `true` if this `Ansi` has no styling.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn is_default(&self) -> bool {
         self.fg.is_none() && self.bg.is_none() && self.flags.is_empty()
     }
 
     /// Builder function to set the foreground color.
     #[allow(clippy::needless_pass_by_value)]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[must_use]
     pub fn fg(self, fg: impl ToColor) -> Self {
         Self {
@@ -254,12 +265,14 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn clear_fg(self) -> Self {
         Self { fg: None, ..self }
     }
 
     /// Builder function to set the background color.
     #[allow(clippy::needless_pass_by_value)]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[must_use]
     pub fn bg(self, bg: impl ToColor) -> Self {
         Self {
@@ -270,12 +283,14 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn clear_bg(self) -> Self {
         Self { bg: None, ..self }
     }
 
     /// Builder function to toggle whether the color is bold.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn bold(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::BOLD),
@@ -285,6 +300,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is underlined.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn underline(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::UNDERLINE),
@@ -294,6 +310,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is italic.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn italic(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::ITALIC),
@@ -303,6 +320,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is blinking.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn blink(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::BLINK),
@@ -312,6 +330,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is inverted / reversed.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn reverse(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::REVERSE),
@@ -321,6 +340,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is strike-d.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn strike(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::STRIKE),
@@ -330,6 +350,8 @@ impl Ansi {
 
     /// Creates a string from this `Ansi` using a `String` to store temporary data.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "flame_on", allow(clippy::items_after_statements))]
     fn build_ansi_string(&self) -> String {
         use std::fmt::Write;
 
@@ -427,6 +449,7 @@ impl Ansi {
     /// sandwiching the text between the color code generated by this [`Ansi`] and
     /// [`Ansi::reset`].
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub fn paint_text(&self, text: &str) -> String {
         if self.is_default() {
             return text.to_string();
@@ -443,6 +466,7 @@ impl Default for Ansi {
 }
 
 impl std::fmt::Display for Ansi {
+    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.build_ansi_string())
     }
@@ -612,4 +636,17 @@ mod tests {
         let _green = Ansi::from_fg((0, 255, 0));
         let _blue = Ansi::from_fg(Color::from_hex("#0000ff").unwrap());
     }
+
+    crate::flame_all_tests!(
+        ["ansi", "tests"],
+        static_colors,
+        the_works,
+        default_is_empty,
+        solo_styles,
+        set_and_clear,
+        derives,
+        paint_text,
+        ansi_parse,
+        color_inputs
+    );
 }

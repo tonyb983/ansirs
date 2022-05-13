@@ -61,4 +61,10 @@ mod tests {
     fn hex_convert_bad_char_panics() {
         let _ = Color::from_hex("#FF000G").unwrap();
     }
+
+    crate::flame_all_tests!(
+        ["color", "mod", "tests"],
+        hex_convert_1,
+        hex_convert_unicode,
+    );
 }

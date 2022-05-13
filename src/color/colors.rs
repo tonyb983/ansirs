@@ -306,6 +306,7 @@ pub enum Colors {
 impl Colors {
     /// Get the name of this color.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub const fn name(&self) -> &'static str {
         match self {
             Self::AliceBlue => "AliceBlue",
@@ -458,6 +459,7 @@ impl Colors {
     /// Try to get a named color from the given string.
     /// #### Non-const function.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub fn from_name(input: &str) -> Option<Self> {
         match input {
             "AliceBlue" | "Alice Blue" => Some(Self::AliceBlue),
@@ -611,6 +613,7 @@ impl Colors {
     /// Try to get a named color from the given name (compared as lowercase strings).
     /// #### Non-const function.
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub fn from_name_ignore_case(input: &str) -> Option<Self> {
         match input.to_lowercase().as_str() {
             "aliceblue" | "alice blue" => Some(Self::AliceBlue),
@@ -765,6 +768,7 @@ impl Colors {
     ///
     /// TODO: This should probably be private?
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub const fn next(self) -> Self {
         match self {
             Self::AliceBlue => Self::AntiqueWhite,
@@ -917,6 +921,7 @@ impl Colors {
     /// Get the RGB values of this named color.
     #[allow(clippy::match_same_arms)]
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub const fn rgb(&self) -> (u8, u8, u8) {
         match self {
             Colors::AliceBlue => (240, 248, 255),
@@ -1068,6 +1073,7 @@ impl Colors {
 
     /// Creates a [`Color`] from this named [`Colors`].
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub const fn into_color(self) -> Color {
         let (r, g, b) = self.rgb();
         Color::from_rgb(r, g, b)
@@ -1075,6 +1081,7 @@ impl Colors {
 
     /// Creates an iterator over all named colors, in alphabetical order, starting
     /// with [`Colors::AliceBlue`] and ending with [`Colors::YellowGreen`].
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     pub fn all() -> impl Iterator<Item = Self> {
         Self::AliceBlue.into_iter()
     }
@@ -1083,6 +1090,8 @@ impl Colors {
     ///
     /// # **This is a very expensive operation.**
     #[must_use]
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
+    #[cfg_attr(feature = "flame_on", allow(clippy::items_after_statements))]
     pub fn get_closest_color(input: (u8, u8, u8)) -> Option<(Self, usize)> {
         fn abs_diff(a: usize, b: usize) -> usize {
             if a > b {
@@ -1124,6 +1133,7 @@ impl AsRef<str> for Colors {
 }
 
 impl std::fmt::Display for Colors {
+    #[cfg_attr(feature = "flame_on", flamer::flame("colors::Colors"))]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.name())
     }

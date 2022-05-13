@@ -16,6 +16,7 @@ pub mod string;
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
 /// `S` can be either an [`Ansi`](Ansi) or a closure that returns an [`Ansi`](Ansi). This might
 /// require bringing the [`IntoAnsi`](IntoAnsi) trait into scope.
+#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
 pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String {
     let actual = format!("{}", text);
 
@@ -32,11 +33,13 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
 }
 
 /// Shortcut to call `print!` with the output of `style_text`.
+#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
 pub fn styled_print<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     print!("{}", style_text(text, style));
 }
 
 /// Shortcut to call `println!` with the output of `style_text`.
+#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
 pub fn styled_println<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     println!("{}", style_text(text, style));
 }
@@ -168,4 +171,11 @@ mod tests {
         assert_eq!(&sf, &first);
         assert_eq!(&sc, &third);
     }
+
+    crate::flame_all_tests!(
+        ["styled", "tests"],
+        storing_styles,
+        style_text_basic,
+        style_text_inputs
+    );
 }
