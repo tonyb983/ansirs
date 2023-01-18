@@ -16,14 +16,19 @@ pub mod string;
 /// Styles the given [`Display`](std::fmt::Display) using the style described by `style`.
 /// `S` can be either an [`Ansi`](Ansi) or a closure that returns an [`Ansi`](Ansi). This might
 /// require bringing the [`IntoAnsi`](IntoAnsi) trait into scope.
-#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
+#[cfg_attr(feature = "trace", tracing::instrument(skip(text, style), fields(text = %text, style_ansi)))]
 pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String {
-    let actual = format!("{}", text);
+    let actual = format!("{text}");
 
     if actual.is_empty() {
         actual
     } else {
-        let ansi = style.into_ansi();
+        let ansi: Ansi = style.into_ansi();
+        #[cfg(feature = "trace")]
+        {
+            let style = format!("{ansi:?}");
+            tracing::Span::current().record("style_ansi", &style.as_str());
+        }
         if ansi.is_default() {
             actual
         } else {
@@ -33,15 +38,19 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
 }
 
 /// Shortcut to call `print!` with the output of `style_text`.
-#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
 pub fn styled_print<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     print!("{}", style_text(text, style));
 }
 
 /// Shortcut to call `println!` with the output of `style_text`.
-#[cfg_attr(feature = "flame_on", flamer::flame("styled"))]
+#[cfg_attr(feature = "trace", tracing::instrument(skip(text, style), fields(text = %text, styled)))]
 pub fn styled_println<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
-    println!("{}", style_text(text, style));
+    let styled = style_text(text, style);
+    #[cfg(feature = "trace")]
+    {
+        tracing::Span::current().record("styled", &styled.as_str());
+    }
+    println!("{styled}");
 }
 
 /// Trait used to add a `style` "extension method" to any type that implements [`Display`](std::fmt::Display)
@@ -106,19 +115,19 @@ mod tests {
 
         assert_eq!(
             style1.to_string(),
-            format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF)
+            format!("{DISPLAY_PRE}4;38;2;100;200;100{DISPLAY_SUF}")
         );
         assert_eq!(
             style2.to_string(),
-            format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF)
+            format!("{DISPLAY_PRE}3;9;48;2;0;0;75{DISPLAY_SUF}")
         );
         assert_eq!(
             style1.to_string(),
-            format!("{}4;38;2;100;200;100{}", DISPLAY_PRE, DISPLAY_SUF)
+            format!("{DISPLAY_PRE}4;38;2;100;200;100{DISPLAY_SUF}")
         );
         assert_eq!(
             style2.to_string(),
-            format!("{}3;9;48;2;0;0;75{}", DISPLAY_PRE, DISPLAY_SUF)
+            format!("{DISPLAY_PRE}3;9;48;2;0;0;75{DISPLAY_SUF}")
         );
     }
 
@@ -132,7 +141,7 @@ mod tests {
 
         let manual_prefix = format!("{}{}{}", DISPLAY_PRE, "4;38;2;255;0;0", DISPLAY_SUF);
         let manual_suffix = format!("{}{}{}", DISPLAY_PRE, "0", DISPLAY_SUF);
-        let manual = format!("{}{}{}", manual_prefix, first, manual_suffix);
+        let manual = format!("{manual_prefix}{first}{manual_suffix}");
 
         let styled_value = style_text(&first, Ansi::red().underline());
 
@@ -155,27 +164,20 @@ mod tests {
             style.strike()
         });
         // Why the fuck cant i get this to work in another project.
-        let _scols = style_text(&first, crate::Colors::Yellow);
-        let _scols = style_text(&first, crate::Colors::Yellow.into_ansi());
+        let _styled_colors = style_text(&first, crate::Colors::Yellow.into_ansi());
+        let _styled_colors = style_text(&first, crate::Colors::Yellow);
         let yellow = crate::Colors::Yellow.into_color();
-        let _scol = style_text(&first, yellow.into_ansi());
+        let _styled_color = style_text(&first, yellow.into_ansi());
 
         let manual_prefix = format!(
             "{}{}{}",
             DISPLAY_PRE, "3;4;9;38;2;200;100;200;48;2;255;255;255", DISPLAY_SUF
         );
         let manual_suffix = format!("{}{}{}", DISPLAY_PRE, "0", DISPLAY_SUF);
-        let third = format!("{}{}{}", manual_prefix, first, manual_suffix);
+        let third = format!("{manual_prefix}{first}{manual_suffix}");
 
         assert_eq!(&st, &first);
         assert_eq!(&sf, &first);
         assert_eq!(&sc, &third);
     }
-
-    crate::flame_all_tests!(
-        ["styled", "tests"],
-        storing_styles,
-        style_text_basic,
-        style_text_inputs
-    );
 }

@@ -91,13 +91,13 @@ mod tests {
     #[test]
     fn mutability() {
         let mut lps = LazyPrettyString::new("Hello, Red!", Ansi::from_fg((255, 0, 0)));
-        println!("{}", lps);
+        println!("{lps}");
         lps.modify_style(|ansi| *ansi = Ansi::from_fg((0, 255, 0)));
         lps.modify_text(|s| *s = "Hello, Green!".to_string());
-        println!("{}", lps);
+        println!("{lps}");
         lps.set_style(Ansi::from_fg((0, 0, 255)));
         lps.set_text("Hello, Blue!");
-        println!("{}", lps);
+        println!("{lps}");
     }
 
     #[test]

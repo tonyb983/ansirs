@@ -14,7 +14,6 @@ pub struct Color(u8, u8, u8);
 impl Color {
     /// Create a new color from the given RGB values.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn from_rgb(r: u8, g: u8, b: u8) -> Self {
         Self(r, g, b)
     }
@@ -23,9 +22,8 @@ impl Color {
     ///
     /// ## Errors
     /// - `ColorParseError` if the given input string cannot be converted to a color.
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
-    #[cfg_attr(feature = "flame_on", allow(clippy::items_after_statements))]
-    pub fn from_hex<S: AsRef<str>>(input: S) -> Result<Self, ColorParseError> {
+    #[cfg_attr(feature = "trace", tracing::instrument)]
+    pub fn from_hex<S: AsRef<str> + std::fmt::Debug>(input: S) -> Result<Self, ColorParseError> {
         fn convert(input: &str) -> Result<u8, ColorParseError> {
             u8::from_str_radix(input, 16).map_err(ColorParseError::ParseIntError)
         }
@@ -58,13 +56,13 @@ impl Color {
                     ColorParseError::Unknown("Unexpected end of string!".to_string())
                 })?;
 
-                convert(&format!("{}{}", f, s))?
+                convert(&format!("{f}{s}"))?
             } else {
                 let c = chars.next().ok_or_else(|| {
                     ColorParseError::Unknown("Unexpected end of string!".to_string())
                 })?;
 
-                convert(&format!("{}{}", c, c))?
+                convert(&format!("{c}{c}"))?
             };
         }
 
@@ -73,42 +71,38 @@ impl Color {
 
     /// Create a hex string from this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn as_hex(&self) -> String {
         format!("#{:02X}{:02X}{:02X}", self.0, self.1, self.2)
     }
 
     /// Create a hex string from this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn as_hex_lower(&self) -> String {
         format!("#{:02x}{:02x}{:02x}", self.0, self.1, self.2)
     }
 
     /// Get the RGB tuple of this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn rgb(&self) -> (u8, u8, u8) {
         (self.0, self.1, self.2)
     }
 
     /// Get the **Red** value of this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn r(&self) -> u8 {
         self.0
     }
 
     /// Get the **Green** value of this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn g(&self) -> u8 {
         self.1
     }
 
     /// Get the **Blue** value of this color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn b(&self) -> u8 {
         self.2
     }
@@ -116,7 +110,6 @@ impl Color {
     /// Converts an ANSI-256 color number to an rgb [`Color`].
     #[allow(clippy::match_same_arms, clippy::too_many_lines)]
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub const fn ansi_256_to_color(input: u8) -> Self {
         let (r, g, b): (u8, u8, u8) = match input {
             //    8-bit, RGB hex
@@ -389,8 +382,8 @@ impl Color {
     }
 
     /// Converts this color into an [`Ansi`] instance by using it as the **foreground** color.
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     pub fn into_ansi(self) -> Ansi {
         Ansi::from_fg(self)
     }
@@ -398,10 +391,9 @@ impl Color {
 
 /// TODO: Should this be changed?
 impl std::fmt::Display for Color {
-    #[cfg_attr(feature = "flame_on", flamer::flame("color::Color"))]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let (r, g, b) = self.rgb();
-        write!(f, "Color({},{},{})", r, g, b)
+        write!(f, "Color({r},{g},{b})")
     }
 }
 
@@ -443,13 +435,4 @@ mod tests {
         let color = Color::from_rgb(25, 100, 250);
         assert_eq!(color.to_string(), "Color(25,100,250)");
     }
-
-    crate::flame_all_tests!(
-        ["color", "tests"],
-        hex,
-        color_from_non_ascii,
-        components,
-        ansi_256_to_color,
-        display
-    );
 }

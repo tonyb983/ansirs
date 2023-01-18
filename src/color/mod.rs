@@ -40,7 +40,7 @@ mod tests {
         let color1 = Color::from_hex("#💜💙💚💛💚💙💜");
         assert!(color1.is_err());
         let color2 = Color::from_hex("#1💜");
-        println!("{:?}", color2);
+        println!("{color2:?}");
         assert!(color2.is_err());
     }
 
@@ -61,10 +61,4 @@ mod tests {
     fn hex_convert_bad_char_panics() {
         let _ = Color::from_hex("#FF000G").unwrap();
     }
-
-    crate::flame_all_tests!(
-        ["color", "mod", "tests"],
-        hex_convert_1,
-        hex_convert_unicode,
-    );
 }

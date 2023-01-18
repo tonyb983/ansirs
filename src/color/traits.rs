@@ -7,7 +7,7 @@
 use crate::{Ansi, Color, ColorParseError, Colors, IntoAnsi};
 
 /// Trait used to facilitate converting various types to a color.
-pub trait ToColor {
+pub trait ToColor: std::fmt::Debug {
     /// Perform the conversion.
     fn to_color(&self) -> Color;
 }

@@ -54,7 +54,6 @@ impl Ansi {
 
     /// Creates a new / empty / default Ansi instance.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn new() -> Self {
         Self {
             fg: None,
@@ -66,8 +65,8 @@ impl Ansi {
     /// Creates a new Ansi from the given foreground color.
     #[allow(clippy::needless_pass_by_value)]
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    pub fn from_fg(fg: impl ToColor) -> Self {
+    #[cfg_attr(feature = "trace", tracing::instrument)]
+    pub fn from_fg<C: ToColor>(fg: C) -> Self {
         Self {
             fg: Some(fg.to_color()),
             bg: None,
@@ -78,8 +77,8 @@ impl Ansi {
     /// Creates a new Ansi from the given background color.
     #[allow(clippy::needless_pass_by_value)]
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    pub fn from_bg(bg: impl ToColor) -> Self {
+    #[cfg_attr(feature = "trace", tracing::instrument)]
+    pub fn from_bg<C: ToColor>(bg: C) -> Self {
         Self {
             fg: None,
             bg: Some(bg.to_color()),
@@ -89,28 +88,27 @@ impl Ansi {
 
     /// Creates a new Ansi with a red foreground color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn red() -> Self {
         Self::from_fg((255, 0, 0))
     }
 
     /// Creates a new Ansi with a green foreground color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn green() -> Self {
         Self::from_fg((0, 255, 0))
     }
 
     /// Creates a new Ansi with a blue foreground color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn blue() -> Self {
         Self::from_fg((0, 0, 255))
     }
 
     /// Reset the terminal to default styling.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn reset() -> &'static str {
         "\x1b[0m"
     }
@@ -119,19 +117,16 @@ impl Ansi {
     /// ***OR*** text surrounded by ansi escape codes, and attempts to extract the styling
     /// into an [`Ansi`] instance.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn parse_ansi_text(input: &str) -> Option<Ansi> {
         if !input.starts_with(Self::PREFIX) {
             eprintln!("Invalid prefix for ansi color codes.");
             return None;
         }
 
-        let end = match input.find('m') {
-            Some(i) => i,
-            None => {
-                eprintln!("Unable to find 'm' end marker");
-                return None;
-            }
+        let Some(end) = input.find('m') else {
+            eprintln!("Unable to find 'm' end marker");
+            return None;
         };
         let mut ansi_nums = input["\u{1b}[".len()..end]
             .split(';')
@@ -222,7 +217,7 @@ impl Ansi {
                 5 => ansi = ansi.blink(),
                 7 => ansi = ansi.reverse(),
                 9 => ansi = ansi.strike(),
-                _ => eprintln!("Unknown ANSI flag: {}", num),
+                _ => eprintln!("Unknown ANSI flag: {num}"),
             }
         }
 
@@ -234,7 +229,6 @@ impl Ansi {
 impl Ansi {
     /// Clear the Ansi object entirely.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[allow(clippy::needless_update)]
     pub const fn clear(self) -> Self {
         Self {
@@ -247,16 +241,15 @@ impl Ansi {
 
     /// Returns `true` if this `Ansi` has no styling.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn is_default(&self) -> bool {
         self.fg.is_none() && self.bg.is_none() && self.flags.is_empty()
     }
 
     /// Builder function to set the foreground color.
     #[allow(clippy::needless_pass_by_value)]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[must_use]
-    pub fn fg(self, fg: impl ToColor) -> Self {
+    #[cfg_attr(feature = "trace", tracing::instrument)]
+    pub fn fg<C: ToColor>(self, fg: C) -> Self {
         Self {
             fg: Some(fg.to_color()),
             ..self
@@ -265,16 +258,15 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn clear_fg(self) -> Self {
         Self { fg: None, ..self }
     }
 
     /// Builder function to set the background color.
     #[allow(clippy::needless_pass_by_value)]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     #[must_use]
-    pub fn bg(self, bg: impl ToColor) -> Self {
+    #[cfg_attr(feature = "trace", tracing::instrument)]
+    pub fn bg<C: ToColor>(self, bg: C) -> Self {
         Self {
             bg: Some(bg.to_color()),
             ..self
@@ -283,14 +275,12 @@ impl Ansi {
 
     /// Builder function to clear the foreground color.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn clear_bg(self) -> Self {
         Self { bg: None, ..self }
     }
 
     /// Builder function to toggle whether the color is bold.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn bold(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::BOLD),
@@ -300,7 +290,6 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is underlined.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn underline(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::UNDERLINE),
@@ -310,8 +299,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is italic.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    pub fn italic(self) -> Self {
+    pub const fn italic(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::ITALIC),
             ..self
@@ -320,7 +308,6 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is blinking.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     pub const fn blink(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::BLINK),
@@ -330,8 +317,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is inverted / reversed.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    pub fn reverse(self) -> Self {
+    pub const fn reverse(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::REVERSE),
             ..self
@@ -340,8 +326,7 @@ impl Ansi {
 
     /// Builder function to toggle whether the color is strike-d.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    pub fn strike(self) -> Self {
+    pub const fn strike(self) -> Self {
         Self {
             flags: self.flags.toggle_to(AnsiFlags::STRIKE),
             ..self
@@ -350,13 +335,12 @@ impl Ansi {
 
     /// Creates a string from this `Ansi` using a `String` to store temporary data.
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
-    #[cfg_attr(feature = "flame_on", allow(clippy::items_after_statements))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     fn build_ansi_string(&self) -> String {
         use std::fmt::Write;
 
         if self.is_default() {
-            return "".to_string();
+            return String::new();
         }
 
         let mut modified = false;
@@ -420,7 +404,7 @@ impl Ansi {
                 ansi.push_str("38;2;");
             }
 
-            write!(ansi, "{};{};{}", r, g, b).expect("Failed to write! to string");
+            write!(ansi, "{r};{g};{b}").expect("Failed to write! to string");
             // ansi.push_str(&format!("{};{};{}", r, g, b));
             modified = true;
         }
@@ -432,14 +416,14 @@ impl Ansi {
             } else {
                 ansi.push_str("48;2;");
             }
-            write!(ansi, "{};{};{}", r, g, b).expect("Failed to write! to string");
+            write!(ansi, "{r};{g};{b}").expect("Failed to write! to string");
             // ansi.push_str(&format!("{};{};{}", r, g, b));
             modified = true;
         }
 
         // This seems like it will be unnecessary, I can't even get the branch to hit during testing.
         if !modified {
-            return "".to_string();
+            return String::new();
         }
 
         format!("{}{}{}", Self::PREFIX, ansi, Self::SUFFIX)
@@ -449,7 +433,7 @@ impl Ansi {
     /// sandwiching the text between the color code generated by this [`Ansi`] and
     /// [`Ansi::reset`].
     #[must_use]
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
+    #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn paint_text(&self, text: &str) -> String {
         if self.is_default() {
             return text.to_string();
@@ -466,7 +450,6 @@ impl Default for Ansi {
 }
 
 impl std::fmt::Display for Ansi {
-    #[cfg_attr(feature = "flame_on", flamer::flame("ansi::Ansi"))]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.build_ansi_string())
     }
@@ -636,17 +619,4 @@ mod tests {
         let _green = Ansi::from_fg((0, 255, 0));
         let _blue = Ansi::from_fg(Color::from_hex("#0000ff").unwrap());
     }
-
-    crate::flame_all_tests!(
-        ["ansi", "tests"],
-        static_colors,
-        the_works,
-        default_is_empty,
-        solo_styles,
-        set_and_clear,
-        derives,
-        paint_text,
-        ansi_parse,
-        color_inputs
-    );
 }

@@ -135,7 +135,7 @@ mod tests {
         let lps_end = start.elapsed();
         let lps_ave = lps_end / ITERS_U32;
 
-        println!("For {} iterations:", ITERS);
+        println!("For {ITERS} iterations:");
         println!(
             "\t{:<20} {:>10?} ({:?} average)",
             "P-String", pstring_end, pstring_ave
@@ -191,7 +191,7 @@ mod tests {
         let pstr_end = start.elapsed();
         let pstr_ave = pstr_end / ITERS_U32;
 
-        println!("For {} iterations:", ITERS);
+        println!("For {ITERS} iterations:");
         println!(
             "\t{:<20} {:>10?} ({:?} average)",
             "P-String", pstring_end, pstring_ave
@@ -255,7 +255,7 @@ mod tests {
         let pstr_end = start.elapsed();
         let pstr_ave = pstr_end / ITERS_U32;
 
-        println!("For {} iterations:", ITERS);
+        println!("For {ITERS} iterations:");
         println!(
             "\t{:<20} {:>10?} ({:?} average)",
             "P-String", pstring_end, pstring_ave
@@ -311,7 +311,7 @@ mod tests {
         let lps_end = start.elapsed();
         let lps_ave = lps_end / ITERS_U32;
 
-        println!("For {} iterations:", ITERS);
+        println!("For {ITERS} iterations:");
         println!(
             "\t{:<20} {:>10?} ({:?} average)",
             "P-String", pstring_end, pstring_ave
@@ -367,7 +367,7 @@ mod tests {
         let lps_end = start.elapsed();
         let lps_ave = lps_end / ITERS_U32;
 
-        println!("For {} iterations:", ITERS);
+        println!("For {ITERS} iterations:");
         println!(
             "\t{:<20} {:>10?} ({:?} average)",
             "P-String", pstring_end, pstring_ave

@@ -30,6 +30,7 @@
 /// - `toggle`
 /// - `set`
 /// - bitwise operators (pretty much all)
+#[allow(clippy::unsafe_derive_deserialize)]
 #[derive(Default, Copy, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct AnsiFlags {

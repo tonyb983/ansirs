@@ -25,9 +25,9 @@ impl std::fmt::Display for ColorParseError {
                 write!(f, "Color string had too few or too many characters")
             }
             ColorParseError::ParseIntError(inner) => {
-                write!(f, "Could not parse color string into a number: {}", inner)
+                write!(f, "Could not parse color string into a number: {inner}")
             }
-            ColorParseError::Unknown(msg) => write!(f, "Unknown error: {}", msg),
+            ColorParseError::Unknown(msg) => write!(f, "Unknown error: {msg}"),
         }
     }
 }
