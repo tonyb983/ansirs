@@ -27,7 +27,7 @@ pub fn style_text<S: IntoAnsi>(text: impl std::fmt::Display, style: S) -> String
         #[cfg(feature = "trace")]
         {
             let style = format!("{ansi:?}");
-            tracing::Span::current().record("style_ansi", &style.as_str());
+            tracing::Span::current().record("style_ansi", style.as_str());
         }
         if ansi.is_default() {
             actual
@@ -48,7 +48,7 @@ pub fn styled_println<S: IntoAnsi>(text: impl std::fmt::Display, style: S) {
     let styled = style_text(text, style);
     #[cfg(feature = "trace")]
     {
-        tracing::Span::current().record("styled", &styled.as_str());
+        tracing::Span::current().record("styled", styled.as_str());
     }
     println!("{styled}");
 }
