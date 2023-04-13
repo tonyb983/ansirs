@@ -1077,6 +1077,7 @@ impl Colors {
 
     /// Creates an iterator over all named colors, in alphabetical order, starting
     /// with [`Colors::AliceBlue`] and ending with [`Colors::YellowGreen`].
+    #[allow(clippy::let_with_type_underscore)]
     #[cfg_attr(feature = "trace", tracing::instrument)]
     pub fn all() -> impl Iterator<Item = Self> {
         Self::AliceBlue.into_iter()
