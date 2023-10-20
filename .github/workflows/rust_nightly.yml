@@ -21,7 +21,7 @@ jobs:
           - windows-latest
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@nightly
