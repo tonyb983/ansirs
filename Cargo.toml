@@ -6,7 +6,7 @@ edition = "2021"
 keywords = ["ansi", "color", "terminal", "tui", "cli"]
 license = "MPL-2.0"
 name = "ansirs"
-repository = "https://www.github.com/tonyb983/ansirs"
+repository = "https://github.com/tonyb983/ansirs"
 version = "0.1.7"
 
 [features]
